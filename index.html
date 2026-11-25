@@ -1,0 +1,2019 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="SAVE POINT: a Salomon x Paris city survival game concept for Gen Z, summer 2028. Student project, GEM.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
+<title>SAVE POINT</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=Space+Mono:wght@400;700&family=Permanent+Marker&family=Press+Start+2P&display=swap">
+<style>
+/* Layout: a field kit spread on a grey table — arcade instruction cards, SD-card saves,
+   bandages as HP, black warning bars for headlines. One 1160px column, bands alternate
+   table-grey / mustard / ink. Single deliberate look (light collage), colors set explicitly. */
+:root {
+  --table: #E6E5E1;
+  --table-2: #D9D7D1;
+  --paper: #F7F5EF;
+  --ink: #141313;
+  --ink-2: #2A2826;
+  --mute: #5E5A55;
+  --red: #E5402F;
+  --mustard: #C99F45;
+  --olive: #8FA846;
+  --sepia: #B8A389;
+  --skin: #E9C9A0;
+  --afk: #00D3F0;
+  --mc: #FF2E93;
+  --pu: #A6EE00;
+  --gl: #FF7A00;
+  --tc: var(--red);
+
+  --f-display: "Anton", "Impact", "Arial Narrow Bold", sans-serif;
+  --f-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Space Mono", "Courier New", monospace;
+  --f-hand: "Permanent Marker", "Comic Sans MS", cursive;
+  --f-pixel: "Press Start 2P", "Space Mono", monospace;
+  --gl-l: max(16px, env(safe-area-inset-left, 0px));
+  --gl-r: max(16px, env(safe-area-inset-right, 0px));
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
+body { margin: 0; background: var(--table); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 80; background: var(--ink); }
+button { font: inherit; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+h1, h2, h3, h4 { margin: 0; line-height: 1.1; text-wrap: balance; }
+p { margin: 0; }
+ul, ol { margin: 0; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: var(--gl-l); padding-right: var(--gl-r); }
+.band { padding-block: 80px; position: relative; overflow: hidden; }
+.band.mustard { background: var(--mustard); }
+.band.ink { background: var(--ink); color: var(--paper); }
+.band.table2 { background: var(--table-2); }
+
+/* student strip */
+.strip { background: var(--ink); color: #CFCAC2; font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.04em; }
+.strip .wrap { padding-block: 6px; display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: space-between; }
+
+/* ---------- HUD ---------- */
+.hud { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 60; background: var(--paper); border-bottom: 3px solid var(--ink); }
+.hud-in { display: flex; align-items: center; gap: 14px; min-height: 60px; }
+.logo { font-family: var(--f-display); font-size: 1.6rem; letter-spacing: 0.02em; background: var(--ink); color: var(--paper); padding: 2px 10px 0; text-decoration: none; line-height: 1.3; white-space: nowrap; }
+.logo i { font-style: normal; color: var(--red); }
+.player { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 0.8125rem; min-width: 0; }
+.player .chip { width: 18px; height: 22px; background: var(--tc); border: 2px solid var(--ink); border-radius: 2px; clip-path: polygon(0 0, 70% 0, 100% 22%, 100% 100%, 0 100%); flex: none; }
+.player b { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.hp-lbl { font-family: var(--f-pixel); font-size: 0.5625rem; letter-spacing: 0.05em; margin-right: 2px; }
+.band-aid { width: 46px; height: 18px; border-radius: 9px; position: relative; background: transparent; border: 2px dashed #9D978F; }
+.band-aid.on { border: 2px solid var(--ink); background: var(--skin); }
+.band-aid.on::after { content: ""; position: absolute; left: 14px; right: 14px; top: 2px; bottom: 2px; background: #F4E3CB radial-gradient(circle, #C9A27B 1px, transparent 1.5px) 0 0 / 5px 5px; border-radius: 2px; }
+.band-aid.final { width: 22px; border-radius: 4px; transform: rotate(45deg) scale(0.85); }
+.band-aid.final.on { background: var(--red); }
+.band-aid.final.on::after { display: none; }
+.menu-btn { min-height: 44px; padding: 0 14px; border: 2px solid var(--ink); background: var(--ink); color: var(--paper); font-family: var(--f-mono); font-weight: 700; cursor: pointer; }
+.navlist { display: none; position: absolute; right: var(--gl-r); top: 100%; background: var(--paper); border: 3px solid var(--ink); list-style: none; padding: 6px; margin: 0; min-width: 240px; box-shadow: 8px 8px 0 var(--ink); }
+.hud.open .navlist { display: grid; }
+.navlist a { display: flex; gap: 10px; padding: 10px 12px; text-decoration: none; font-family: var(--f-mono); font-size: 0.875rem; }
+.navlist a:hover { background: var(--table); }
+.navlist a span { color: var(--red); font-weight: 700; }
+@media (max-width: 640px) { .hp-lbl, .player .lab { display: none; } .hp { gap: 3px; } .band-aid { width: 22px; height: 14px; } .band-aid.on::after { left: 7px; right: 7px; } .band-aid.final { width: 16px; } .logo { font-size: 1.15rem; padding: 2px 6px 0; } .hud-in { gap: 8px; } .player b { max-width: 5.5em; } .menu-btn { padding: 0 10px; } }
+
+/* ---------- warning-bar headlines ---------- */
+.bars { display: grid; justify-items: start; gap: 6px; }
+.bar { display: inline-block; background: var(--ink); color: var(--red); font-family: var(--f-display); text-transform: uppercase; line-height: 1.05; padding: 0.06em 0.22em 0.02em; letter-spacing: 0.01em; }
+.bar.w { color: var(--paper); }
+.bar.r { background: var(--red); color: var(--ink); }
+.sec-head { display: grid; gap: 18px; margin-bottom: 40px; max-width: 760px; }
+.sec-head .bar { font-size: clamp(2.2rem, 6vw, 4rem); }
+.sec-head .kick { font-family: var(--f-pixel); font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--red); }
+.ink .sec-head .kick { color: var(--pu); }
+.sec-head p { font-size: 1.125rem; max-width: 62ch; }
+.ink .bar { background: var(--paper); color: var(--red); }
+.ink .bar.w { color: var(--ink); }
+.small { font-size: 0.875rem; }
+.mono { font-family: var(--f-mono); }
+
+/* stickers */
+.sticker { position: absolute; pointer-events: none; z-index: 1; }
+.bandage { display: block; width: 150px; height: 46px; border-radius: 23px; background: var(--skin); box-shadow: 0 6px 12px rgba(0,0,0,0.18); position: relative; }
+.bandage::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle, rgba(120,80,40,0.35) 1.2px, transparent 1.8px) 0 0 / 9px 9px; }
+.bandage::after { content: ""; position: absolute; left: 50%; top: 7px; bottom: 7px; width: 48px; transform: translateX(-50%); background: #F6EADB; border-radius: 4px; }
+.bandage.pink { background: #F6A6BE; }
+.bandage.blue { background: #7F9BEA; }
+.bandage.lime { background: #B8E86A; }
+.bandage.ouch::after { content: "OUCH"; display: grid; place-items: center; font-family: var(--f-display); color: #2347B8; font-size: 1.1rem; width: 62px; background: #EAF0FA; }
+.bandage.save::after { content: "SAVED"; display: grid; place-items: center; font-family: var(--f-display); color: var(--red); font-size: 1rem; width: 62px; }
+.bandage.x { width: 120px; }
+@media (max-width: 760px) { .sticker.hide-m { display: none; } }
+
+/* ---------- hero ---------- */
+.hero { background: var(--mustard); padding-block: 56px 72px; overflow: hidden; position: relative; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 48px; align-items: center; position: relative; z-index: 2; }
+.hero-title .bar { font-size: clamp(3.6rem, 13vw, 9rem); line-height: 0.95; padding: 0.04em 0.12em 0; }
+.hero-title .bar.sub { font-size: clamp(1.6rem, 4.6vw, 3rem); }
+.hero-title .bar.tag { font-size: clamp(1.1rem, 2.6vw, 1.6rem); font-family: var(--f-mono); text-transform: none; font-weight: 700; padding: 6px 12px; }
+.hero-meta { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-meta span { font-family: var(--f-mono); font-size: 0.875rem; font-weight: 700; background: var(--paper); border: 2px solid var(--ink); padding: 4px 10px; }
+.start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 24px; margin-top: 30px; }
+.press { display: inline-grid; grid-template-columns: 76px auto; align-items: center; gap: 14px; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+.press .btn { width: 76px; height: 76px; border-radius: 50%; background: var(--red); border: 4px solid var(--ink); box-shadow: 0 7px 0 var(--ink); transition: transform 120ms var(--ease), box-shadow 120ms var(--ease); display: grid; place-items: center; }
+.press .btn::after { content: ""; width: 26px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.45); transform: translate(-10px, -12px) rotate(-20deg); }
+.press:active .btn { transform: translateY(5px); box-shadow: 0 2px 0 var(--ink); }
+.press .lbl { font-family: var(--f-pixel); font-size: 1rem; line-height: 1.6; }
+.press .lbl small { display: block; font-family: var(--f-mono); font-size: 0.8125rem; }
+.blink { animation: blink 1.1s steps(2, end) infinite; }
+@keyframes blink { 50% { opacity: 0.25; } }
+.count { font-family: var(--f-mono); font-size: 0.875rem; }
+.count b { font-family: var(--f-pixel); font-size: 1.25rem; display: block; margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+/* metro billboard */
+.billboard { background: #2B2B2B; padding: 14px; border-radius: 6px; box-shadow: 0 24px 40px rgba(0,0,0,0.35); transform: rotate(1.5deg); position: relative; }
+.billboard::before { content: "MÉTRO · LIGNE 3 · RÉPUBLIQUE"; position: absolute; top: -26px; left: 0; font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; background: var(--paper); border: 2px solid var(--ink); padding: 1px 8px; }
+.screen { background: #0D1B12; color: #B9F5C8; aspect-ratio: 3 / 4; max-width: 100%; border-radius: 4px; display: grid; grid-template-rows: auto 1fr auto; padding: 22px 20px; position: relative; overflow: hidden; }
+.screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0 2px, transparent 2px 4px); pointer-events: none; }
+.screen .top { font-family: var(--f-pixel); font-size: 0.625rem; display: flex; justify-content: space-between; }
+.screen .mid { display: grid; place-content: center; text-align: center; gap: 18px; }
+.screen .ps { font-family: var(--f-pixel); font-size: clamp(1.1rem, 2.8vw, 1.6rem); color: #FFF3A8; text-shadow: 0 0 10px rgba(255,243,168,0.6); }
+.screen .q { font-family: var(--f-mono); font-size: 0.875rem; }
+.qr { width: 96px; height: 96px; margin: 0 auto; background: #fff; padding: 6px; display: grid; grid-template-columns: repeat(12, 1fr); }
+.qr i { background: #0D1B12; }
+.qr i.o { background: transparent; }
+.screen .bot { font-family: var(--f-mono); font-size: 0.75rem; display: flex; justify-content: space-between; }
+@media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } .billboard { max-width: 340px; margin: 30px auto 0; } }
+
+
+/* metro mock-up */
+.mock { margin: 0; background: var(--paper); padding: 12px 12px 10px; transform: rotate(1.6deg); box-shadow: 0 24px 40px rgba(0,0,0,0.3); position: relative; display: grid; gap: 8px; }
+.mock::before { content: ""; position: absolute; top: -12px; left: 50%; width: 110px; height: 26px; transform: translateX(-50%) rotate(-3deg); background: rgba(246,166,190,0.75); z-index: 2; }
+.mock-btn { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; position: relative; width: 100%; }
+.mock-btn img { display: block; width: 100%; height: auto; aspect-ratio: 1400 / 813; object-fit: cover; }
+.mock-tag { position: absolute; left: 10px; bottom: 10px; font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; background: var(--ink); color: var(--paper); padding: 3px 8px; }
+.mock figcaption { font-family: var(--f-mono); font-size: 0.75rem; color: var(--mute); }
+dialog.mockdlg { border: 0; padding: 0; background: transparent; width: min(96vw, 1100px); max-width: 100%; max-height: 94vh; overflow: auto; }
+dialog.mockdlg::backdrop { background: rgba(15,14,13,0.88); }
+.mockdlg-in { background: var(--paper); border: 3px solid var(--ink); padding: 16px; display: grid; gap: 16px; position: relative; }
+.mfull { width: 100%; height: auto; display: block; max-height: 70vh; object-fit: contain; background: #222; }
+.mposters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.mposters figure { margin: 0; display: grid; gap: 6px; }
+.mposters img { width: 100%; height: auto; display: block; border: 2px solid var(--ink); }
+.mposters figcaption { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; }
+.mockx { position: sticky; top: 0; justify-self: end; width: 44px; height: 44px; border: 3px solid var(--ink); background: var(--red); font-weight: 700; cursor: pointer; z-index: 3; margin-bottom: -60px; }
+@media (max-width: 600px) { .mposters { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .mock { margin-top: 24px; } }
+
+/* boot overlay */
+.boot { position: fixed; inset: 0; z-index: 90; background: #0D1B12; color: #B9F5C8; display: grid; place-content: center; text-align: center; gap: 18px; font-family: var(--f-pixel); padding: 24px; }
+.boot .ld { width: min(320px, 80vw); height: 18px; border: 3px solid #B9F5C8; padding: 2px; }
+.boot .ld i { display: block; height: 100%; width: 0; background: #FFF3A8; animation: load 1.1s steps(10, end) forwards; }
+@keyframes load { to { width: 100%; } }
+
+/* ---------- briefing (instruction card) ---------- */
+.brief-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.icard { background: var(--paper); border: 3px solid var(--ink); box-shadow: 10px 10px 0 var(--ink); }
+.icard-h { background: var(--red); color: var(--ink); font-family: var(--f-display); font-size: 1.6rem; text-transform: uppercase; padding: 8px 18px 4px; border-bottom: 3px solid var(--ink); display: flex; justify-content: space-between; gap: 10px; }
+.icard-h small { font-family: var(--f-mono); font-size: 0.75rem; align-self: center; text-transform: none; }
+.spec { margin: 0; display: grid; }
+.spec div { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: 14px; padding: 12px 18px; border-bottom: 2px dashed #CFCAC2; }
+.spec div:last-child { border-bottom: 0; }
+.spec dt { font-family: var(--f-mono); font-weight: 700; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px; }
+.spec dd { margin: 0; }
+@media (max-width: 560px) { .spec div { grid-template-columns: 1fr; gap: 2px; } }
+.torn { background: #F2EEE4; padding: 26px 24px 30px; position: relative; transform: rotate(-1.2deg); box-shadow: 0 14px 26px rgba(0,0,0,0.18); clip-path: polygon(0 3%, 6% 0, 14% 2%, 24% 0, 36% 3%, 48% 0, 60% 2%, 72% 0, 84% 3%, 94% 0, 100% 2%, 100% 97%, 92% 100%, 80% 97%, 66% 100%, 52% 97%, 38% 100%, 24% 97%, 10% 100%, 0 97%); }
+.torn .big { font-family: var(--f-display); font-size: clamp(1.6rem, 3.4vw, 2.2rem); line-height: 1.15; text-transform: uppercase; }
+.torn p + p { margin-top: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; list-style: none; padding: 0; }
+.chips li { font-family: var(--f-mono); font-size: 0.8125rem; font-weight: 700; border: 2px solid var(--ink); padding: 3px 10px; background: var(--paper); }
+@media (max-width: 860px) { .brief-grid { grid-template-columns: 1fr; } }
+
+/* ---------- how to play ---------- */
+.play-grid { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 36px; align-items: start; }
+.steps { list-style: none; padding: 0; display: grid; gap: 10px; }
+.step-btn { width: 100%; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left; background: var(--paper); border: 3px solid var(--ink); padding: 8px 12px 8px 8px; cursor: pointer; min-height: 60px; transition: transform 150ms var(--ease); }
+.step-btn:hover { transform: translateX(4px); }
+.step-btn .no { font-family: var(--f-pixel); font-size: 0.75rem; background: var(--ink); color: var(--paper); height: 40px; display: grid; place-items: center; }
+.step-btn .nm { font-family: var(--f-display); font-size: 1.25rem; text-transform: uppercase; line-height: 1.1; }
+.step-btn[aria-selected="true"] { background: var(--red); box-shadow: 6px 6px 0 var(--ink); }
+.step-btn.done .no { background: var(--olive); color: var(--ink); }
+.console { background: #1D1C1B; border-radius: 14px; padding: 16px; box-shadow: 0 20px 36px rgba(0,0,0,0.3); }
+.console-screen { background: #0D1B12; color: #DFF7E6; border-radius: 6px; min-height: 340px; padding: 26px 26px 22px; position: relative; overflow: hidden; display: grid; }
+.console-screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0 2px, transparent 2px 4px); pointer-events: none; }
+.panel { display: grid; gap: 16px; align-content: start; grid-template-columns: minmax(0, 1fr) 150px; }
+.panel[hidden] { display: none; }
+.panel .lv { font-family: var(--f-pixel); font-size: 0.625rem; color: #FFF3A8; grid-column: 1 / -1; }
+.panel h3 { font-family: var(--f-display); font-size: clamp(1.8rem, 4vw, 2.6rem); text-transform: uppercase; color: #fff; font-weight: 400; grid-column: 1; }
+.panel p { font-size: 1.0625rem; max-width: 48ch; grid-column: 1; }
+.panel .art { grid-column: 2; grid-row: 2 / span 3; align-self: center; }
+.panel .art svg { width: 150px; height: auto; display: block; }
+.panel .why { font-family: var(--f-mono); font-size: 0.8125rem; color: #9CD7AC; grid-column: 1; }
+.console-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.console-ctl button { min-height: 44px; padding: 0 16px; background: #34322F; color: #F2EEE4; border: 0; border-radius: 22px; font-family: var(--f-mono); font-weight: 700; cursor: pointer; }
+.console-ctl button.pri { background: var(--red); color: var(--ink); }
+.console-ctl .dpad { margin-left: auto; font-family: var(--f-pixel); font-size: 0.5625rem; color: #8E8A84; }
+@media (max-width: 860px) { .play-grid { grid-template-columns: 1fr; } .panel { grid-template-columns: 1fr; } .panel .art { grid-column: 1; grid-row: auto; } .panel .art svg { width: 110px; } .console-screen { min-height: 0; } }
+
+/* persona */
+.persona { margin-top: 40px; display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 22px; background: var(--paper); border: 3px solid var(--ink); padding: 18px; max-width: 860px; }
+.persona .ph { background: var(--sepia); aspect-ratio: 4 / 5; max-width: 100%; display: grid; place-items: center; border: 2px solid var(--ink); }
+.persona .ph svg { width: 80%; height: auto; }
+.persona h3 { font-family: var(--f-display); font-size: 1.6rem; text-transform: uppercase; font-weight: 400; }
+.persona .tag { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; color: var(--red); }
+.persona p { margin-top: 8px; }
+@media (max-width: 560px) { .persona { grid-template-columns: 1fr; } .persona .ph { max-width: 160px; } }
+
+/* ---------- characters: SD cards ---------- */
+.chars { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px; }
+.char { display: grid; gap: 14px; align-content: start; }
+.sd { position: relative; aspect-ratio: 0.8; max-width: 100%; background: #1E1E1E; border-radius: 10px; clip-path: polygon(0 0, 78% 0, 100% 13%, 100% 100%, 0 100%); padding: 13% 9% 9% 13%; box-shadow: inset 0 0 0 2px #3A3A3A; display: grid; grid-template-rows: auto 1fr auto; transition: transform 300ms var(--ease); }
+.sd::before { content: ""; position: absolute; left: 4%; top: 20%; width: 4%; height: 14%; background: #111; border-radius: 2px; box-shadow: inset 0 0 0 1px #3A3A3A; }
+.sd .lock { position: absolute; left: 2.5%; top: 40%; font-family: var(--f-body); font-size: 0.625rem; color: #BDBDBD; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 0.06em; }
+.sd .lab { background: #0F0F0F; border: 3px solid var(--c, var(--red)); border-radius: 4px; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; }
+.sd .lab-top { background: var(--c, var(--red)); color: var(--ink); font-family: var(--f-hand); font-size: 0.8125rem; text-align: center; padding: 2px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sd .face { position: relative; background: #DAD7D1; overflow: hidden; }
+.sd .face svg { width: 100%; height: 100%; display: block; }
+.sd .barc { position: absolute; right: 6px; bottom: 6px; width: 26%; height: 18%; background: #fff; padding: 3px; display: grid; }
+.sd .barc i { background: repeating-linear-gradient(90deg, #111 0 1px, transparent 1px 3px, #111 3px 5px, transparent 5px 6px, #111 6px 7px, transparent 7px 9px); }
+.sd .lab-bot { background: #0F0F0F; color: var(--c, var(--red)); font-family: var(--f-display); font-size: clamp(1rem, 2vw, 1.45rem); text-transform: uppercase; text-align: center; line-height: 1.15; padding: 4px 4px 2px; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sd .lab-bot::before, .sd .lab-bot::after { content: "✦"; font-size: 0.6em; vertical-align: 0.3em; margin: 0 4px; }
+.sd .pin { position: absolute; bottom: 3%; left: 16%; right: 10%; height: 4%; background: repeating-linear-gradient(90deg, transparent 0 6%, #2C2C2C 6% 14%); }
+.char[data-sel="true"] .sd { transform: translateY(-8px) rotate(-2deg); box-shadow: inset 0 0 0 2px #3A3A3A, 0 0 0 4px var(--c, var(--red)), 0 18px 30px rgba(0,0,0,0.3); }
+.char-info { background: var(--paper); border: 3px solid var(--ink); }
+.char-info .ci-h { background: var(--c); padding: 6px 12px 4px; font-family: var(--f-display); font-size: 1.15rem; text-transform: uppercase; border-bottom: 3px solid var(--ink); display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.char-info .ci-h small { font-family: var(--f-mono); font-size: 0.6875rem; text-transform: none; }
+.char-info dl { margin: 0; padding: 10px 12px 12px; display: grid; gap: 8px; }
+.char-info dt { font-family: var(--f-mono); font-size: 0.6875rem; font-weight: 700; background: var(--ink); color: var(--paper); display: inline-block; padding: 1px 6px; justify-self: start; text-transform: uppercase; }
+.char-info dd { margin: 0; font-size: 0.9375rem; }
+.combo { font-family: var(--f-mono); font-weight: 700; letter-spacing: 0.08em; color: var(--red); }
+.insert { min-height: 44px; border: 3px solid var(--ink); background: var(--ink); color: var(--paper); font-family: var(--f-mono); font-weight: 700; cursor: pointer; }
+.insert:hover { background: var(--c); color: var(--ink); }
+.char[data-sel="true"] .insert { background: var(--c); color: var(--ink); }
+.namebox { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 34px; background: var(--paper); border: 3px solid var(--ink); padding: 14px 16px; max-width: 760px; }
+.namebox label { font-family: var(--f-mono); font-weight: 700; font-size: 0.875rem; }
+.namebox input { font: inherit; font-family: var(--f-mono); padding: 8px 10px; border: 2px solid var(--ink); background: #fff; min-width: 0; flex: 1 1 180px; max-width: 280px; }
+.namebox p { flex-basis: 100%; font-size: 0.875rem; color: var(--mute); }
+@media (max-width: 980px) { .chars { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .chars { grid-template-columns: minmax(0, 1fr); max-width: 320px; margin-inline: auto; } }
+
+/* ---------- levels ---------- */
+.lv-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.map { background: #EFE9DC; border: 3px solid var(--ink); position: relative; }
+.map svg { width: 100%; height: auto; display: block; }
+.map .node { cursor: pointer; }
+.map .node circle.ring { fill: var(--paper); stroke: var(--ink); stroke-width: 4; transition: fill 200ms var(--ease); }
+.map .node.sel circle.ring { fill: var(--red); }
+.map .node.cleared circle.ring { fill: var(--olive); }
+.map .node.locked circle.ring { fill: #BDB7AC; }
+.map .node text { font-family: var(--f-display); font-size: 22px; fill: var(--ink); paint-order: stroke; stroke: #EFE9DC; stroke-width: 6px; stroke-linejoin: round; }
+.map .node text.n { font-family: var(--f-pixel); font-size: 13px; stroke: none; fill: var(--ink); }
+.map .node.sel text.n { fill: var(--paper); }
+.map .node:focus-visible circle.ring { stroke: var(--red); stroke-width: 7; }
+#token { transition: transform 700ms var(--ease); }
+.map-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 14px; border-top: 3px solid var(--ink); font-family: var(--f-mono); font-size: 0.75rem; background: var(--paper); }
+.map-legend i { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--ink); border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.lvp { background: var(--paper); border: 3px solid var(--ink); box-shadow: 10px 10px 0 var(--ink); }
+.lvp[hidden] { display: none; }
+.lvp-h { background: var(--ink); color: var(--paper); padding: 10px 18px 8px; display: grid; gap: 4px; }
+.lvp-h .k { font-family: var(--f-pixel); font-size: 0.625rem; color: var(--pu); }
+.lvp-h h3 { font-family: var(--f-display); font-size: clamp(1.8rem, 4vw, 2.6rem); text-transform: uppercase; font-weight: 400; }
+.lvp-h .dt { font-family: var(--f-mono); font-size: 0.875rem; }
+.lvp-b { padding: 18px; display: grid; gap: 14px; }
+.lvp-b dl { margin: 0; display: grid; gap: 12px; }
+.lvp-b dt { font-family: var(--f-mono); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--red); }
+.lvp-b dd { margin: 2px 0 0; }
+.lvp-b .act { display: flex; flex-wrap: wrap; gap: 10px; }
+.gbtn { min-height: 46px; padding: 0 18px; border: 3px solid var(--ink); background: var(--red); color: var(--ink); font-family: var(--f-mono); font-weight: 700; cursor: pointer; box-shadow: 4px 4px 0 var(--ink); transition: transform 120ms var(--ease), box-shadow 120ms var(--ease); }
+.gbtn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+.gbtn.ghost { background: var(--paper); }
+.gbtn[disabled] { background: #CFCAC2; cursor: default; }
+.lock-note { font-family: var(--f-mono); font-size: 0.875rem; background: #FFF2B8; border: 2px dashed var(--ink); padding: 10px 12px; }
+.heat { margin-top: 26px; font-family: var(--f-mono); font-size: 0.875rem; max-width: 72ch; }
+@media (max-width: 900px) { .lv-grid { grid-template-columns: 1fr; } }
+
+/* booth explainer */
+.booth-row { margin-top: 56px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; align-items: center; }
+.booth-mini { background: linear-gradient(160deg, #B7B3AA, #8D8980); border: 3px solid var(--ink); border-radius: 10px 10px 4px 4px; padding: 16px 14px 12px; display: grid; gap: 10px; justify-items: center; }
+.booth-mini .sign { font-family: var(--f-display); font-size: 1.4rem; background: var(--red); padding: 2px 10px 0; border: 2px solid var(--ink); }
+.booth-mini .slot { width: 80%; height: 12px; background: #2B2A28; border-radius: 6px; }
+.booth-mini .mini-strip { width: 46px; display: grid; gap: 3px; background: #fff; padding: 3px; border: 1px solid #555; }
+.booth-mini .mini-strip i { aspect-ratio: 1; background: #3a3a3a; }
+@media (max-width: 640px) { .booth-row { grid-template-columns: 1fr; } .booth-mini { max-width: 220px; } }
+
+/* booth dialog */
+dialog.booth { border: 0; padding: 0; background: transparent; max-width: min(94vw, 760px); width: 100%; max-height: 94vh; overflow: auto; }
+dialog.booth::backdrop { background: rgba(15,14,13,0.82); }
+.booth-in { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 24px; background: linear-gradient(160deg, #C9C5BC, #8E8A81); border: 4px solid var(--ink); border-radius: 14px; padding: 24px; align-items: start; }
+.booth-in h3 { font-family: var(--f-display); font-size: 2rem; text-transform: uppercase; font-weight: 400; }
+.booth-in .bsign { display: inline-block; background: var(--red); border: 3px solid var(--ink); padding: 2px 12px 0; }
+.booth-in p { margin-top: 10px; }
+.booth-in .flash { position: fixed; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 5; }
+.booth-in .flash.go { animation: flashA 900ms steps(1, end); }
+@keyframes flashA { 0% { opacity: 0.9; } 20% { opacity: 0; } 40% { opacity: 0.9; } 60% { opacity: 0; } 70% { opacity: 0.9; } 80%, 100% { opacity: 0; } }
+.outlet { background: #6E6B65; border: 3px solid var(--ink); border-radius: 6px; padding: 14px 14px 0; height: 560px; overflow: hidden; position: relative; }
+.outlet::before { content: ""; position: absolute; top: 8px; left: 10px; right: 10px; height: 10px; background: #252422; border-radius: 5px; z-index: 2; }
+.strip-out { width: 118px; margin: 4px auto 0; background: #fff; padding: 8px 8px 10px; display: grid; gap: 6px; transform: translateY(-105%); box-shadow: 0 8px 16px rgba(0,0,0,0.35); }
+.strip-out.print { animation: printS 2.4s steps(24, end) forwards; }
+@keyframes printS { to { transform: translateY(0); } }
+.frame { aspect-ratio: 1; position: relative; background: #DAD7D1; overflow: hidden; filter: grayscale(0.15) contrast(1.1); border: 3px solid var(--c, var(--red)); }
+.frame svg { width: 100%; height: 100%; display: block; }
+.frame .meme { position: absolute; font-family: var(--f-display); font-size: 0.75rem; background: var(--c, var(--red)); color: var(--ink); padding: 0 4px; line-height: 1.3; }
+.frame .meme.t { top: 3px; left: 3px; }
+.frame .meme.b { bottom: 3px; right: 3px; background: var(--ink); color: var(--paper); }
+.stamp { font-family: var(--f-mono); font-size: 0.625rem; font-weight: 700; text-align: center; line-height: 1.35; }
+.badge-w { width: 46px; height: 46px; border-radius: 50%; margin: 2px auto 0; background: var(--c, var(--red)); border: 3px solid var(--ink); display: grid; place-items: center; font-family: var(--f-pixel); font-size: 0.5rem; }
+.booth-ctl { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.save-msg { font-family: var(--f-pixel); font-size: 0.75rem; margin-top: 16px; line-height: 1.7; min-height: 2em; }
+@media (max-width: 640px) { .booth-in { grid-template-columns: 1fr; padding: 16px; } .outlet { height: 560px; } }
+
+/* ---------- final stage ---------- */
+.boss-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; font-family: var(--f-pixel); font-size: 0.625rem; margin-bottom: 18px; }
+.boss-bar .meter { height: 22px; border: 3px solid var(--paper); padding: 2px; }
+.boss-bar .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--red), var(--gl)); transition: width 500ms var(--ease); }
+.rd-chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin-bottom: 18px; }
+.rd-chip { min-height: 44px; padding: 0 14px; border: 3px solid var(--paper); background: transparent; color: var(--paper); font-family: var(--f-mono); font-weight: 700; cursor: pointer; }
+.rd-chip[aria-selected="true"] { background: var(--paper); color: var(--ink); }
+.rd-chip.past { border-color: #6A6661; color: #A9A49D; }
+.rd-panel { border: 3px solid var(--paper); padding: 22px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; min-height: 180px; }
+.rd-panel[hidden] { display: none; }
+.rd-panel h3 { font-family: var(--f-display); font-size: 2rem; font-weight: 400; text-transform: uppercase; grid-column: 1 / -1; color: var(--paper); }
+.rd-panel h4 { font-family: var(--f-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--pu); margin-bottom: 6px; }
+@media (max-width: 700px) { .rd-panel { grid-template-columns: 1fr; } }
+.vote { margin-top: 44px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 30px; align-items: start; }
+.vote h3 { font-family: var(--f-display); font-size: 1.9rem; text-transform: uppercase; font-weight: 400; }
+.vote p { margin-top: 10px; color: #CFCAC2; }
+.vopts { list-style: none; padding: 0; display: grid; gap: 10px; }
+.vopt { width: 100%; text-align: left; position: relative; overflow: hidden; border: 3px solid var(--paper); background: transparent; color: var(--paper); min-height: 52px; padding: 10px 70px 10px 14px; cursor: pointer; font-weight: 600; }
+.vopt .fill { position: absolute; inset: 0 auto 0 0; width: 0; background: rgba(255,46,147,0.35); transition: width 500ms var(--ease); }
+.vopt .pct { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: var(--f-mono); font-weight: 700; }
+.vopt span { position: relative; }
+.vopt[aria-pressed="true"] { border-color: var(--mc); }
+@media (max-width: 760px) { .vote { grid-template-columns: 1fr; } }
+.rewards { margin-top: 56px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }
+.reward { background: var(--paper); color: var(--ink); border: 3px solid var(--paper); display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; padding: 18px; align-items: center; }
+.reward h3 { font-family: var(--f-display); font-size: 1.6rem; text-transform: uppercase; font-weight: 400; }
+.reward .who { font-family: var(--f-pixel); font-size: 0.5625rem; color: var(--red); display: block; margin-bottom: 6px; }
+.reward p { margin-top: 8px; font-size: 0.9375rem; }
+.boxart { aspect-ratio: 1; max-width: 100%; background: var(--olive); border: 3px solid var(--ink); position: relative; display: grid; place-items: center; transform: rotate(-4deg); box-shadow: 6px 6px 0 var(--ink); }
+.boxart b { font-family: var(--f-display); font-size: 1.5rem; text-align: center; line-height: 1; background: var(--ink); color: var(--pu); padding: 6px 8px 4px; }
+.boxart::before { content: ""; position: absolute; inset: 12px; border: 2px dashed var(--ink); }
+.reward .sd { --c: var(--mustard); max-width: 150px; }
+.reward .sd .lab-bot { font-size: 0.9rem; }
+.serial { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; margin-top: 8px; display: inline-block; background: var(--table); padding: 2px 8px; border: 1px dashed var(--ink); }
+@media (max-width: 860px) { .rewards { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .reward { grid-template-columns: 1fr; } .reward .boxart, .reward .sd { max-width: 150px; } }
+.live { margin-top: 26px; font-family: var(--f-mono); font-size: 0.875rem; color: #CFCAC2; }
+.live b { color: var(--red); }
+
+/* ---------- research ---------- */
+.context { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: center; margin-bottom: 56px; }
+.ransom { font-family: var(--f-display); font-size: clamp(1.6rem, 3.6vw, 2.5rem); line-height: 1.25; text-transform: uppercase; }
+.ransom span { display: inline-block; padding: 0 6px; margin: 2px 0; }
+.ransom span:nth-child(3n+1) { background: var(--paper); transform: rotate(-1deg); }
+.ransom span:nth-child(3n+2) { background: var(--ink); color: var(--paper); transform: rotate(1deg); }
+.ransom span:nth-child(3n) { background: var(--red); transform: rotate(-0.5deg); }
+.opps { list-style: none; padding: 0; display: grid; gap: 12px; }
+.opps li { background: var(--paper); border-left: 8px solid var(--olive); padding: 12px 14px; }
+@media (max-width: 860px) { .context { grid-template-columns: 1fr; } }
+.h3bar { font-family: var(--f-display); font-size: 1.8rem; text-transform: uppercase; font-weight: 400; display: inline-block; background: var(--ink); color: var(--paper); padding: 2px 12px 0; margin-bottom: 20px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 64px; }
+.stat { background: var(--paper); border: 3px solid var(--ink); padding: 16px; display: grid; gap: 8px; align-content: start; }
+.stat .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.stat h4 { font-family: var(--f-display); font-size: 1.35rem; text-transform: uppercase; font-weight: 400; }
+.stat .src { font-family: var(--f-mono); font-size: 0.6875rem; font-weight: 700; background: var(--ink); color: var(--paper); padding: 1px 6px; white-space: nowrap; }
+.pips { display: flex; gap: 3px; }
+.pips i { flex: 1; height: 8px; background: var(--red); border: 1px solid var(--ink); }
+.pips i.o { background: transparent; }
+@media (max-width: 900px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
+.intel-wrap { overflow-x: auto; margin-bottom: 64px; border: 3px solid var(--ink); background: var(--paper); }
+.intel { width: 100%; border-collapse: collapse; min-width: 720px; }
+.intel th { text-align: left; font-family: var(--f-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 14px; background: var(--ink); color: var(--paper); }
+.intel td { padding: 12px 14px; vertical-align: top; border-bottom: 2px dashed #CFCAC2; }
+.intel td.n { font-family: var(--f-display); font-size: 2rem; line-height: 1; color: var(--red); white-space: nowrap; }
+.intel td.s { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+.enemies { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.enemy { perspective: 900px; min-height: 280px; }
+.enemy-in { position: relative; height: 100%; min-height: 280px; transition: transform 500ms var(--ease); transform-style: preserve-3d; cursor: pointer; }
+.enemy.flipped .enemy-in { transform: rotateY(180deg); }
+.en-f, .en-b { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border: 3px solid var(--ink); padding: 14px; display: grid; align-content: start; gap: 10px; }
+.en-f { background: var(--paper); }
+.en-b { background: var(--olive); transform: rotateY(180deg); }
+.en-f .hpb { height: 10px; border: 2px solid var(--ink); background: var(--red); }
+.en-b .hpb { height: 10px; border: 2px solid var(--ink); background: transparent; }
+.en-k { font-family: var(--f-pixel); font-size: 0.5rem; }
+.en-f h4, .en-b h4 { font-family: var(--f-display); font-size: 1.3rem; text-transform: uppercase; font-weight: 400; line-height: 1.1; }
+.en-f blockquote { margin: 0; font-family: var(--f-hand); font-size: 1rem; line-height: 1.35; background: #fff; padding: 8px; transform: rotate(-1.5deg); border: 1px solid #CFCAC2; }
+.en-f svg { width: 60px; height: 60px; }
+.en-hint { font-family: var(--f-mono); font-size: 0.6875rem; margin-top: auto; }
+.en-b p { font-size: 0.9375rem; }
+.enemy-tip { font-family: var(--f-mono); font-size: 0.875rem; margin-bottom: 16px; }
+@media (max-width: 1000px) { .enemies { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .enemies { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .enemies { grid-template-columns: 1fr; } }
+
+/* ---------- inspiration archive (lightbox + slides) ---------- */
+.lightbox { background: linear-gradient(180deg, #FBFBF4, #EDEDE2); border: 3px solid var(--ink); padding: 28px 22px; box-shadow: inset 0 0 60px rgba(255,255,230,0.9), 0 0 0 10px #CFCCC4, 0 18px 40px rgba(0,0,0,0.2); margin: 10px 10px 56px; }
+.slides { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 26px 20px; }
+.slide { background: #F3F1EA; border-radius: 10px; padding: 14px 14px 12px; box-shadow: 0 6px 14px rgba(0,0,0,0.16), inset 0 0 0 1px #DAD6CC; display: grid; gap: 10px; align-content: start; transform: rotate(var(--r, -1deg)); }
+.slide:nth-child(3n+2) { --r: 1.2deg; }
+.slide:nth-child(3n) { --r: -0.4deg; }
+.slide .mtop { display: flex; justify-content: space-between; align-items: center; font-family: var(--f-mono); font-size: 0.6875rem; font-weight: 700; color: #8C8579; letter-spacing: 0.06em; }
+.slide .code { background: var(--red); color: var(--ink); padding: 1px 6px; }
+.win { aspect-ratio: 4 / 3; max-width: 100%; background: #2C2B29; border-radius: 3px; position: relative; overflow: hidden; display: grid; place-items: center; }
+.win img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.win .empty { color: #9E998F; font-family: var(--f-mono); font-size: 0.75rem; text-align: center; padding: 10px; line-height: 1.5; }
+.win .empty b { display: block; font-family: var(--f-display); font-size: 1.6rem; color: #6D6962; font-weight: 400; }
+.win-tools { display: flex; gap: 6px; }
+.win-tools label, .win-tools button { flex: 1; min-height: 36px; display: grid; place-items: center; border: 2px solid var(--ink); background: var(--paper); font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; cursor: pointer; position: relative; }
+.win-tools label input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.win-tools .rm { color: var(--red); }
+.slide h4 { font-family: var(--f-display); font-size: 1.15rem; text-transform: uppercase; font-weight: 400; line-height: 1.15; }
+.slide p { font-size: 0.875rem; }
+.slide .ours { font-size: 0.875rem; background: #FFF2B8; padding: 6px 8px; border-left: 4px solid var(--ink); }
+.slide .srcl { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; }
+.slide .ours b { font-family: var(--f-mono); font-size: 0.6875rem; display: block; }
+.slide.loading .win::after { content: "Uploading…"; position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.6); color: #fff; font-family: var(--f-mono); }
+.add-slide { border: 3px dashed var(--ink); border-radius: 10px; min-height: 220px; display: grid; place-items: center; text-align: center; font-family: var(--f-mono); font-weight: 700; cursor: pointer; position: relative; padding: 16px; }
+.add-slide input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.add-slide b { font-size: 2rem; display: block; }
+.dir { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 56px; }
+.dir > div { background: var(--paper); border: 3px solid var(--ink); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.dir h4 { font-family: var(--f-display); font-size: 1.3rem; text-transform: uppercase; font-weight: 400; }
+.sw { display: flex; gap: 6px; flex-wrap: wrap; }
+.sw i { width: 36px; height: 36px; border: 2px solid var(--ink); }
+@media (max-width: 760px) { .dir { grid-template-columns: 1fr; } }
+.sources { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 32px; }
+.sources ol { list-style: none; padding: 0; display: grid; gap: 6px; font-size: 0.9375rem; }
+.sources li { display: grid; grid-template-columns: 3em minmax(0, 1fr); gap: 8px; }
+.sources li .c { font-family: var(--f-mono); font-weight: 700; color: var(--red); }
+@media (max-width: 760px) { .sources { grid-template-columns: 1fr; } }
+
+/* ---------- achievements ---------- */
+.ach { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.ach > div { background: var(--paper); border: 3px solid var(--ink); padding: 18px 16px; display: grid; gap: 10px; align-content: start; justify-items: start; }
+.trophy { width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--ink); display: grid; place-items: center; font-family: var(--f-pixel); font-size: 0.75rem; }
+.ach h4 { font-family: var(--f-display); font-size: 1.5rem; text-transform: uppercase; font-weight: 400; }
+.ach ul { padding-left: 1.1em; font-size: 0.9375rem; display: grid; gap: 4px; }
+@media (max-width: 900px) { .ach { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .ach { grid-template-columns: 1fr; } }
+
+/* ---------- timeline ---------- */
+.weeks { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 48px; }
+.wk { border: 3px solid var(--ink); background: var(--paper); padding: 12px; display: grid; gap: 6px; align-content: start; }
+.wk .d { font-family: var(--f-pixel); font-size: 0.5625rem; }
+.wk h4 { font-family: var(--f-display); font-size: 1.3rem; text-transform: uppercase; font-weight: 400; }
+.wk p { font-size: 0.875rem; }
+.wk.fin { background: var(--red); }
+.wk.dec { background: #FFF2B8; }
+@media (max-width: 900px) { .weeks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .weeks { grid-template-columns: 1fr; } }
+.gantt-wrap { overflow-x: auto; border: 3px solid var(--ink); background: var(--paper); }
+.gantt { border-collapse: collapse; min-width: 900px; width: 100%; font-size: 0.875rem; }
+.gantt th { font-family: var(--f-mono); font-size: 0.6875rem; padding: 8px 4px; background: var(--ink); color: var(--paper); text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.gantt th:first-child { text-align: left; padding-left: 12px; }
+.gantt td { border-bottom: 1px solid #DAD6CC; padding: 0; height: 38px; text-align: center; }
+.gantt td:first-child { text-align: left; padding: 8px 12px; min-width: 260px; }
+.gantt tr.grp td { background: var(--table-2); font-family: var(--f-mono); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; height: auto; padding: 6px 12px; }
+.gantt td.on { position: relative; }
+.gantt td.on::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; bottom: 10px; background: var(--red); }
+.gantt td.on.dec::before { background: var(--mustard); }
+.gantt td.on.lv::before { background: var(--olive); }
+.gantt td.star { font-size: 1.3rem; color: var(--red); }
+.gantt td.star::before { content: "★"; }
+.gantt th.live-col { background: var(--red); color: var(--ink); font-weight: 700; }
+.g-key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; font-family: var(--f-mono); font-size: 0.75rem; }
+.g-key i { display: inline-block; width: 22px; height: 10px; margin-right: 6px; vertical-align: 0; }
+
+/* footer */
+.foot { background: var(--ink); color: #CFCAC2; padding-block: 56px 120px; }
+.foot-in { display: grid; gap: 16px; justify-items: start; }
+.foot .logo { font-size: 2.4rem; }
+.foot p { max-width: 70ch; font-size: 0.9375rem; }
+
+/* toast */
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); transform: translate(-50%, 140%); z-index: 85; background: var(--ink); color: var(--pu); font-family: var(--f-pixel); font-size: 0.6875rem; padding: 14px 18px; border: 3px solid var(--pu); transition: transform 350ms var(--ease); max-width: calc(100vw - 32px); text-align: center; line-height: 1.6; }
+.toast.on { transform: translate(-50%, 0); }
+
+/* ---------- edit mode ---------- */
+.is-edit [data-k] { cursor: text; }
+.is-edit [data-k]:hover { outline: 2px dashed rgba(229,64,47,0.7); outline-offset: 2px; }
+[data-k].edited { white-space: pre-line; }
+.is-edit [data-k].edited { outline: 2px solid rgba(143,168,70,0.9); outline-offset: 2px; }
+[data-k].editing { outline: 3px solid var(--olive) !important; outline-offset: 3px; background: #fff; color: var(--ink); white-space: pre-wrap; }
+body:not(.is-edit) [data-k].cleared { display: none !important; }
+.is-edit [data-k].cleared { display: inline-block; min-width: 8em; min-height: 1.4em; outline: 2px dashed var(--red); opacity: 0.7; }
+.is-edit [data-k].cleared::before { content: "(deleted text)"; font-family: var(--f-mono); font-size: 0.75rem; }
+.restore { display: inline-block; margin: 0 0 0 8px; font-family: var(--f-mono); font-size: 0.6875rem; font-weight: 700; padding: 3px 8px; border: 0; background: var(--olive); color: var(--ink); cursor: pointer; vertical-align: middle; border-radius: 3px; text-transform: none; letter-spacing: 0; line-height: 1.4; }
+body:not(.is-edit) .restore, body:not(.is-edit) .edit-only { display: none !important; }
+body:not(.is-edit) .u-hidden { display: none !important; }
+.is-edit .u-hidden { opacity: 0.35; outline: 3px dashed var(--red); }
+[data-u] { position: relative; }
+.ubtn { position: absolute; top: -12px; right: -10px; z-index: 6; font-family: var(--f-mono); font-size: 0.6875rem; font-weight: 700; padding: 4px 8px; border: 2px solid var(--ink); background: var(--paper); color: var(--red); cursor: pointer; display: none; transform: none; }
+.is-edit [data-u]:hover > .ubtn, .is-edit .u-hidden > .ubtn, .is-edit [data-u]:focus-within > .ubtn { display: block; }
+.is-edit .u-hidden > .ubtn { color: var(--ink); background: var(--olive); opacity: 1; }
+.added { white-space: pre-line; }
+.is-edit .added { outline: 2px solid rgba(0,211,240,0.8); outline-offset: 2px; }
+.etool { position: absolute; z-index: 75; display: flex; flex-wrap: wrap; gap: 6px; max-width: min(520px, calc(100vw - 16px)); }
+.etool .lrow { display: flex; gap: 6px; flex-basis: 100%; }
+.etool .lrow[hidden] { display: none; }
+.etool input { font: inherit; font-family: var(--f-mono); font-size: 0.8125rem; padding: 6px 8px; border: 2px solid var(--ink); min-width: 0; flex: 1; background: #fff; color: var(--ink); }
+main a.ulink { color: inherit; text-decoration: underline; text-decoration-color: var(--red); text-decoration-thickness: 2px; text-underline-offset: 3px; word-break: break-word; }
+main a.ulink:hover { background: rgba(229,64,47,0.15); }
+.etool[hidden] { display: none; }
+.etool button { min-height: 34px; padding: 0 10px; border: 2px solid var(--ink); background: var(--paper); font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+.etool button.del { color: var(--red); }
+.dock { position: fixed; right: calc(env(safe-area-inset-right, 0px) + 16px); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); z-index: 78; display: grid; justify-items: end; gap: 8px; font-family: var(--f-mono); font-size: 0.8125rem; }
+.dock[hidden] { display: none; }
+.dock .row { display: flex; gap: 8px; }
+.dock button { min-height: 44px; padding: 0 16px; border: 3px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-mono); font-weight: 700; cursor: pointer; box-shadow: 4px 4px 0 var(--ink); }
+.dock button.on { background: var(--olive); }
+.dock .msg { background: var(--ink); color: var(--paper); padding: 6px 10px; max-width: 300px; line-height: 1.45; }
+.dock .msg:empty { display: none; }
+.dock .hint { background: var(--paper); border: 2px solid var(--ink); padding: 6px 10px; max-width: 300px; line-height: 1.45; }
+body:not(.is-edit) .dock .hint { display: none; }
+kbd { font-family: var(--f-mono); background: var(--table); border: 1px solid var(--ink); border-radius: 3px; padding: 0 4px; font-size: 0.9em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blink { animation: none; }
+  .boot .ld i { animation: none; width: 100%; }
+  .strip-out.print { animation: none; transform: none; }
+  .booth-in .flash.go { animation: none; }
+  .enemy-in, #token, .sd, .step-btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="ht" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.25" fill="#111" opacity="0.26"/></pattern>
+    <pattern id="chk" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#111" opacity="0.12"/><rect x="8" y="8" width="8" height="8" fill="#111" opacity="0.12"/></pattern>
+    <symbol id="p-afk" viewBox="0 0 120 140">
+      <rect width="120" height="140" fill="#D9D6CF"/><rect width="120" height="140" fill="url(#chk)"/><rect width="120" height="140" fill="url(#ht)"/>
+      <path d="M12 140 C18 112 40 104 60 104 C80 104 102 112 108 140 Z" fill="#141313"/>
+      <path d="M44 106 L60 122 L76 106" fill="none" stroke="#00D3F0" stroke-width="4"/>
+      <rect x="51" y="92" width="18" height="16" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <ellipse cx="60" cy="70" rx="26" ry="30" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <path d="M33 76 C26 40 44 28 62 29 C86 30 97 48 88 80 C87 66 83 57 77 52 C70 59 52 59 44 52 C39 58 35 66 33 76 Z" fill="#141313"/>
+      <path d="M30 72 C27 32 93 32 90 72" fill="none" stroke="#141313" stroke-width="6"/>
+      <rect x="22" y="62" width="13" height="22" rx="5" fill="#00D3F0" stroke="#141313" stroke-width="2.5"/>
+      <rect x="85" y="62" width="13" height="22" rx="5" fill="#00D3F0" stroke="#141313" stroke-width="2.5"/>
+      <path d="M45 74 q6 4 12 0 M63 74 q6 4 12 0" fill="none" stroke="#141313" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M55 90 q5 2 10 0" fill="none" stroke="#141313" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="92" y="28" font-family="Anton, Impact, sans-serif" font-size="18" fill="#141313">z</text>
+      <text x="102" y="16" font-family="Anton, Impact, sans-serif" font-size="12" fill="#141313">z</text>
+    </symbol>
+    <symbol id="p-mc" viewBox="0 0 120 140">
+      <rect width="120" height="140" fill="#D9D6CF"/><rect width="120" height="140" fill="url(#chk)"/><rect width="120" height="140" fill="url(#ht)"/>
+      <path d="M26 124 C18 72 30 28 60 27 C92 27 104 72 96 124 Z" fill="#141313"/>
+      <path d="M14 140 C20 114 40 108 60 108 C80 108 100 114 106 140 Z" fill="#2A2826"/>
+      <rect x="51" y="92" width="18" height="18" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <ellipse cx="60" cy="68" rx="25" ry="30" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <path d="M34 62 C37 38 52 31 62 33 C77 33 87 44 87 62 C77 50 60 45 46 52 Z" fill="#141313"/>
+      <rect x="38" y="62" width="19" height="11" rx="4" fill="#141313"/><rect x="63" y="62" width="19" height="11" rx="4" fill="#141313"/>
+      <path d="M57 66 h6" stroke="#141313" stroke-width="2.5"/>
+      <path d="M52 86 q8 -5 16 0 q-8 7 -16 0Z" fill="#E5402F" stroke="#141313" stroke-width="1.6"/>
+      <path d="M97 14 l3 9 9 3 -9 3 -3 9 -3 -9 -9 -3 9 -3z" fill="#FF2E93" stroke="#141313" stroke-width="1.6"/>
+      <path d="M16 40 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" fill="#FF2E93" stroke="#141313" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="p-pu" viewBox="0 0 120 140">
+      <rect width="120" height="140" fill="#D9D6CF"/><rect width="120" height="140" fill="url(#chk)"/><rect width="120" height="140" fill="url(#ht)"/>
+      <path d="M12 140 C18 112 40 104 60 104 C80 104 102 112 108 140 Z" fill="#141313"/>
+      <text x="44" y="134" font-family="Anton, Impact, sans-serif" font-size="16" fill="#A6EE00">P1+P2</text>
+      <rect x="51" y="94" width="18" height="14" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <ellipse cx="60" cy="72" rx="26" ry="30" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <path d="M78 50 L102 44 L102 53 L84 59Z" fill="#A6EE00" stroke="#141313" stroke-width="2.5"/>
+      <path d="M33 64 C33 36 87 36 87 64 Z" fill="#A6EE00" stroke="#141313" stroke-width="2.5"/>
+      <circle cx="49" cy="73" r="3.4" fill="#141313"/><circle cx="71" cy="73" r="3.4" fill="#141313"/>
+      <path d="M45 84 Q60 100 75 84 Z" fill="#fff" stroke="#141313" stroke-width="2.5" stroke-linejoin="round"/>
+      <g fill="#B4734A"><circle cx="42" cy="81" r="1.3"/><circle cx="46" cy="83" r="1.3"/><circle cx="74" cy="83" r="1.3"/><circle cx="78" cy="81" r="1.3"/></g>
+    </symbol>
+    <symbol id="p-gl" viewBox="0 0 120 140">
+      <rect width="120" height="140" fill="#D9D6CF"/><rect width="120" height="140" fill="url(#chk)"/><rect width="120" height="140" fill="url(#ht)"/>
+      <path d="M12 140 C18 112 40 104 60 104 C80 104 102 112 108 140 Z" fill="#141313"/>
+      <ellipse cx="66" cy="70" rx="26" ry="30" fill="#FF7A00" opacity="0.85"/>
+      <ellipse cx="54" cy="70" rx="26" ry="30" fill="#00D3F0" opacity="0.7"/>
+      <rect x="51" y="92" width="18" height="16" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <ellipse cx="60" cy="70" rx="26" ry="30" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <path d="M34 60 L37 38 L46 50 L52 30 L60 47 L68 29 L74 47 L83 36 L86 60 C76 49 44 49 34 60Z" fill="#141313"/>
+      <path d="M43 67 l9 9 M52 67 l-9 9" stroke="#141313" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="71" cy="72" r="4.5" fill="#141313"/>
+      <path d="M48 89 l4 -3 4 3 4 -3 4 3 4 -3 4 3" fill="none" stroke="#141313" stroke-width="2.5" stroke-linejoin="round"/>
+      <rect x="0" y="80" width="120" height="5" fill="#FF7A00" opacity="0.75"/>
+      <rect x="8" y="98" width="62" height="3" fill="#00D3F0"/>
+      <rect x="70" y="40" width="44" height="3" fill="#FF7A00"/>
+    </symbol>
+    <symbol id="p-peter" viewBox="0 0 120 140">
+      <path d="M12 140 C18 112 40 104 60 104 C80 104 102 112 108 140 Z" fill="#141313"/>
+      <rect x="51" y="92" width="18" height="16" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <ellipse cx="60" cy="70" rx="26" ry="30" fill="#F1D7B5" stroke="#141313" stroke-width="2.5"/>
+      <path d="M34 66 C30 38 46 30 60 31 C80 31 92 42 87 66 C84 54 76 46 64 48 C54 50 44 46 40 50 C37 54 35 60 34 66Z" fill="#141313"/>
+      <circle cx="49" cy="72" r="8" fill="none" stroke="#141313" stroke-width="2.5"/><circle cx="71" cy="72" r="8" fill="none" stroke="#141313" stroke-width="2.5"/>
+      <path d="M57 72 h6" stroke="#141313" stroke-width="2.5"/>
+      <circle cx="49" cy="72" r="2" fill="#141313"/><circle cx="71" cy="72" r="2" fill="#141313"/>
+      <path d="M53 89 h14" stroke="#141313" stroke-width="2.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="en" viewBox="0 0 60 60">
+      <path d="M8 50 C2 30 10 8 30 8 C50 8 58 30 52 50 L46 44 L40 52 L34 44 L28 52 L22 44 L16 52 Z" fill="currentColor" stroke="#141313" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="22" cy="26" r="6" fill="#fff" stroke="#141313" stroke-width="2"/><circle cx="38" cy="26" r="6" fill="#fff" stroke="#141313" stroke-width="2"/>
+      <circle cx="23" cy="27" r="2.5" fill="#141313"/><circle cx="37" cy="27" r="2.5" fill="#141313"/>
+      <path d="M20 38 h20 l-3 4 -3 -4 -4 4 -3 -4 -4 4z" fill="#fff" stroke="#141313" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="strip"><div class="wrap"><span>Student concept · GEM MSc Fashion, Design &amp; Luxury Management · Futuretopia 2028</span><span>Not an official Salomon campaign</span></div></div>
+
+<header class="hud" id="hud">
+  <div class="wrap hud-in">
+    <a class="logo" href="#start">SAVE<i>·</i>POINT</a>
+    <div class="player" aria-live="polite"><span class="chip" aria-hidden="true"></span><span class="lab">PLAYER</span><b id="hudName">No character yet</b></div>
+    <div class="hp" role="img" id="hpBar" aria-label="Saves: 0 of 3"><span class="hp-lbl">SAVES</span><i class="band-aid" data-s="1"></i><i class="band-aid" data-s="2"></i><i class="band-aid" data-s="3"></i><i class="band-aid final" data-s="4" title="Final stage"></i></div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navList">MENU</button>
+    <ul class="navlist" id="navList">
+      <li><a href="#briefing"><span>01</span>Mission briefing</a></li>
+      <li><a href="#play"><span>02</span>How to play</a></li>
+      <li><a href="#characters"><span>03</span>Characters</a></li>
+      <li><a href="#levels"><span>04</span>Levels</a></li>
+      <li><a href="#final"><span>05</span>Final stage</a></li>
+      <li><a href="#research"><span>06</span>Why 2028</a></li>
+      <li><a href="#inspiration"><span>07</span>Inspiration archive</a></li>
+      <li><a href="#kpi"><span>08</span>Achievements</a></li>
+      <li><a href="#timeline"><span>09</span>Timeline</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="start">
+  <span class="sticker hide-m" style="top:22px; right:42%; transform:rotate(-18deg)"><i class="bandage ouch"></i></span>
+  <span class="sticker" style="bottom:26px; left:-30px; transform:rotate(14deg)"><i class="bandage pink x"></i></span>
+  <span class="sticker hide-m" style="bottom:60px; right:4%; transform:rotate(-32deg)"><i class="bandage blue x"></i></span>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="bars hero-title">
+        <h1 class="bar w">Save Point</h1>
+        <p class="bar sub">Escape from reality!</p>
+        <p class="bar tag r">Run as fast as you imagine.</p>
+      </div>
+      <ul class="hero-meta" aria-label="Key facts">
+        <li><span>Paris</span></li>
+        <li><span>8 Jul – 5 Aug 2028</span></li>
+        <li><span>Free to play</span></li>
+        <li><span>Ages 18–28</span></li>
+        <li><span>Salomon × Paris shops &amp; artists</span></li>
+      </ul>
+      <div class="start-row">
+        <button class="press" id="pressStart" type="button" data-noedit>
+          <span class="btn" aria-hidden="true"></span>
+          <span class="lbl"><span class="blink">PRESS START</span><small>Click to load the game</small></span>
+        </button>
+        <p class="count" data-noedit>Game starts in<b id="countDays">— days</b></p>
+      </div>
+    </div>
+    <figure class="mock">
+      <button class="mock-btn" type="button" id="mockOpen" data-noedit aria-label="Enlarge the metro mock-up">
+        <img src="img/metro-mockup-crop.jpg" alt="Mock-up: SAVE POINT posters on the platform of Opéra metro station" width="1400" height="813">
+        <span class="mock-tag">MÉTRO MOCK-UP · CLICK TO ZOOM</span>
+      </button>
+      <figcaption>Mock-up at Opéra metro station, home of Level 2. Photo taken by me.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<dialog class="mockdlg" id="mockDlg" aria-label="Metro mock-up and posters">
+  <div class="mockdlg-in" data-noedit>
+    <button type="button" class="mockx" id="mockClose" aria-label="Close">✕</button>
+    <img src="img/metro-mockup-full.jpg" alt="Full metro mock-up" class="mfull">
+    <div class="mposters">
+      <figure><img src="img/poster-press-start.jpg" alt="Poster: PRESS START billboard"><figcaption>Poster 1 · PRESS START (game entry)</figcaption></figure>
+      <figure><img src="img/poster-characters.jpg" alt="Poster: Who are you today? character cards"><figcaption>Poster 2 · WHO ARE YOU TODAY? (pick a mood)</figcaption></figure>
+    </div>
+  </div>
+</dialog>
+
+<!-- ============ BRIEFING ============ -->
+<section class="band" id="briefing">
+  <span class="sticker hide-m" style="top:40px; right:3%; transform:rotate(24deg)"><i class="bandage lime x"></i></span>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">01 · MISSION BRIEFING</span>
+      <div class="bars"><h2 class="bar">What is Save Point?</h2></div>
+      <p>A four-week city game in Paris for Gen Z. Every Saturday a new district opens as a level. Players solve clues in local shops, save their progress at a photo booth, and unlock a final stage. It should feel like playing a game, not attending a brand campaign.</p>
+    </div>
+    <div class="brief-grid">
+      <div class="icard" data-u="brief-card">
+        <div class="icard-h"><span>Game manual</span><small>Summer 2028</small></div>
+        <dl class="spec">
+          <div><dt>Title</dt><dd>SAVE POINT — Escape from reality!</dd></div>
+          <div><dt>Partners</dt><dd>Salomon × local Paris shops and artists</dd></div>
+          <div><dt>Dates</dt><dd>Game starts Saturday 8 July 2028. A new district opens every Saturday. FINAL STAGE on Saturday 5 August.</dd></div>
+          <div><dt>Levels</dt><dd>République, Opéra and Louvre are levels 1–3. The final stage takes place at Les Halles.</dd></div>
+          <div><dt>Players</dt><dd>Ages 18–28. Teams are formed by mood, not by age.</dd></div>
+          <div><dt>Cost</dt><dd>Free to play. The city board game is sold afterwards on Salomon’s website.</dd></div>
+          <div><dt>Sign-up</dt><dd>Scan the QR code on metro posters and bus stops.</dd></div>
+          <div><dt>Prizes</dt><dd>Winning team: access to buy the limited city board game. Every player: a personal finish card.</dd></div>
+        </dl>
+      </div>
+      <div class="torn" data-u="brief-why">
+        <p class="big">In 2028, Gen Z is buried in chaos and algorithms.</p>
+        <p>They still want to go out. They need a reason that is worth it, and people to share it with.</p>
+        <p>Save Point gives them a goal for every Saturday: clear the level, save the game, find your team.</p>
+        <ul class="chips" aria-label="Keywords">
+          <li>Metro billboard</li><li>City puzzle</li><li>Meme photo booth</li><li>Live finale</li><li>Board game</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW TO PLAY ============ -->
+<section class="band table2" id="play">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">02 · HOW TO PLAY</span>
+      <div class="bars"><h2 class="bar">One player, six steps</h2></div>
+      <p>Follow a test player through the whole game. Click a step, or press Play to run them in order.</p>
+    </div>
+    <div class="play-grid">
+      <ol class="steps" role="tablist" aria-label="Player journey">
+        <li><button class="step-btn" role="tab" aria-selected="true" data-step="0"><span class="no">01</span><span class="nm e">Press Start</span></button></li>
+        <li><button class="step-btn" role="tab" aria-selected="false" data-step="1"><span class="no">02</span><span class="nm e">Pick a mood</span></button></li>
+        <li><button class="step-btn" role="tab" aria-selected="false" data-step="2"><span class="no">03</span><span class="nm e">Enter the level</span></button></li>
+        <li><button class="step-btn" role="tab" aria-selected="false" data-step="3"><span class="no">04</span><span class="nm e">Save the game</span></button></li>
+        <li><button class="step-btn" role="tab" aria-selected="false" data-step="4"><span class="no">05</span><span class="nm e">Unlock the final</span></button></li>
+        <li><button class="step-btn" role="tab" aria-selected="false" data-step="5"><span class="no">06</span><span class="nm e">Keep playing</span></button></li>
+      </ol>
+      <div>
+        <div class="console">
+          <div class="console-screen">
+            <div class="panel" role="tabpanel" data-panel="0" data-u="step-1">
+              <span class="lv">STEP 01 / 06</span>
+              <h3>Press Start</h3>
+              <p>Peter sees a strange screen on a metro billboard that says “PRESS START”. He scans the QR code.</p>
+              <p class="why">Trend link: Shoppable touchpoint. The billboard is the game’s front door.</p>
+              <div class="art" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="10" y="14" width="100" height="74" fill="#2B2B2B" stroke="#DFF7E6" stroke-width="3"/><rect x="18" y="22" width="84" height="58" fill="#0D1B12"/><text x="60" y="56" text-anchor="middle" font-family="'Press Start 2P', monospace" font-size="8" fill="#FFF3A8">PRESS START</text><rect x="54" y="88" width="12" height="22" fill="#DFF7E6"/><rect x="36" y="108" width="48" height="5" fill="#DFF7E6"/></svg></div>
+            </div>
+            <div class="panel" role="tabpanel" data-panel="1" data-u="step-2" hidden>
+              <span class="lv">STEP 02 / 06</span>
+              <h3>Pick a mood</h3>
+              <p>He answers one question: “How do you feel today?” His answer gives him a character card. The color of the card’s border shows his team.</p>
+              <p class="why">Trend link: Mood-based personalisation and fragmented identities.</p>
+              <div class="art" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="16" y="16" width="40" height="40" fill="#00D3F0" stroke="#DFF7E6" stroke-width="3"/><rect x="64" y="16" width="40" height="40" fill="#FF2E93" stroke="#DFF7E6" stroke-width="3"/><rect x="16" y="64" width="40" height="40" fill="#A6EE00" stroke="#DFF7E6" stroke-width="3"/><rect x="64" y="64" width="40" height="40" fill="#FF7A00" stroke="#DFF7E6" stroke-width="3"/></svg></div>
+            </div>
+            <div class="panel" role="tabpanel" data-panel="2" data-u="step-3" hidden>
+              <span class="lv">STEP 03 / 06</span>
+              <h3>Enter the level</h3>
+              <p>On Saturday he goes to the district that opened this week. He solves clues with shop owners. The clues are props made by local artists.</p>
+              <p class="why">Trend link: IRL gaming and human premium.</p>
+              <div class="art" aria-hidden="true"><svg viewBox="0 0 120 120"><path d="M60 108 C40 80 26 64 26 46 a34 34 0 0 1 68 0 C94 64 80 80 60 108Z" fill="#E5402F" stroke="#DFF7E6" stroke-width="3"/><circle cx="60" cy="46" r="12" fill="#0D1B12" stroke="#DFF7E6" stroke-width="3"/></svg></div>
+            </div>
+            <div class="panel" role="tabpanel" data-panel="3" data-u="step-4" hidden>
+              <span class="lv">STEP 04 / 06</span>
+              <h3>Save the game</h3>
+              <p>At the end of the level he “saves” at the photo booth. He takes home a print of his character card photo with that week’s badge.</p>
+              <p class="why">Trend link: #BadTaste meme photo booths. The reward is something to share.</p>
+              <div class="art" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="40" y="8" width="40" height="104" fill="#fff" stroke="#DFF7E6" stroke-width="3"/><rect x="46" y="14" width="28" height="20" fill="#2B2B2B"/><rect x="46" y="38" width="28" height="20" fill="#2B2B2B"/><rect x="46" y="62" width="28" height="20" fill="#2B2B2B"/><rect x="46" y="86" width="28" height="20" fill="#2B2B2B"/></svg></div>
+            </div>
+            <div class="panel" role="tabpanel" data-panel="4" data-u="step-5" hidden>
+              <span class="lv">STEP 05 / 06</span>
+              <h3>Unlock the final</h3>
+              <p>After three saves he gets clues during decode week. He has to work out where the final stage will happen.</p>
+              <p class="why">Trend link: Selective engagement. The goal makes every Saturday count.</p>
+              <div class="art" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="42" cy="60" r="22" fill="none" stroke="#FFF3A8" stroke-width="8"/><path d="M62 60 H108 M92 60 v16 M104 60 v12" stroke="#FFF3A8" stroke-width="8"/></svg></div>
+            </div>
+            <div class="panel" role="tabpanel" data-panel="5" data-u="step-6" hidden>
+              <span class="lv">STEP 06 / 06</span>
+              <h3>Keep playing</h3>
+              <p>After the finale he can buy the city board game and keep playing at home. He may also find his photo in the “Player Hall” on Instagram.</p>
+              <p class="why">Trend link: Story extension and cross-platform IP.</p>
+              <div class="art" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="14" y="30" width="92" height="66" fill="#8FA846" stroke="#DFF7E6" stroke-width="3"/><rect x="24" y="40" width="72" height="46" fill="none" stroke="#0D1B12" stroke-width="3" stroke-dasharray="6 4"/><circle cx="44" cy="63" r="7" fill="#E5402F"/><rect x="62" y="56" width="16" height="16" fill="#fff" stroke="#0D1B12" stroke-width="2"/></svg></div>
+            </div>
+          </div>
+          <div class="console-ctl" data-noedit>
+            <button type="button" id="stepPrev">◀ Back</button>
+            <button type="button" id="stepNext">Next ▶</button>
+            <button type="button" class="pri" id="stepPlay">▶ Play all</button>
+            <span class="dpad">A: SELECT · B: BACK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="persona" data-u="persona">
+      <div class="ph" aria-hidden="true"><svg viewBox="0 0 120 140"><use href="#p-peter"/></svg></div>
+      <div>
+        <span class="tag">TEST PLAYER · USER SIMULATION</span>
+        <h3>Peter, 23, 3D animator</h3>
+        <p>Born in 2005. Works fully remote and has lived in Paris for five years. Online for more than ten hours a day. Loves memes, retro games, board games and Y2K photo booths. Hates brand ads, but joins anything that is fun enough to feel like a game.</p>
+        <p>Most of his friends are online, so real life feels a bit lonely. He is tired of algorithm picks and wants a reason to go out with real people.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHARACTERS ============ -->
+<section class="band" id="characters">
+  <span class="sticker hide-m" style="top:60px; right:6%; transform:rotate(-12deg)"><i class="bandage save"></i></span>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">03 · SELECT CHARACTER</span>
+      <div class="bars"><h2 class="bar">Choose your mood</h2></div>
+      <p>Every player gets a character card shaped like a memory card, because each card holds the player’s saves. The border color shows the team. Pick one to try it.</p>
+    </div>
+    <div class="chars">
+      <article class="char" data-char="afk" style="--c: var(--afk)" data-u="char-afk">
+        <div class="sd" data-noedit aria-hidden="true">
+          <span class="lock">Lock ▸</span>
+          <div class="lab">
+            <div class="lab-top">player</div>
+            <div class="face"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use href="#p-afk"/></svg><span class="barc"><i></i></span></div>
+            <div class="lab-bot">AFK</div>
+          </div>
+          <span class="pin"></span>
+        </div>
+        <div class="char-info">
+          <div class="ci-h"><h3>AFK</h3><small>Electric blue</small></div>
+          <dl>
+            <div><dt>Mood</dt><dd>“I want to switch off.”</dd></div>
+            <div><dt>Special move</dt><dd><span class="combo">↓ ↓ ●</span> Slow Mode: gets extra time hints from the AI guide.</dd></div>
+            <div><dt>In the team</dt><dd>Stays calm and spots the small details other people miss.</dd></div>
+          </dl>
+        </div>
+        <button class="insert" type="button" data-pick="afk">Insert card</button>
+      </article>
+      <article class="char" data-char="mc" style="--c: var(--mc)" data-u="char-mc">
+        <div class="sd" data-noedit aria-hidden="true">
+          <span class="lock">Lock ▸</span>
+          <div class="lab">
+            <div class="lab-top">player</div>
+            <div class="face"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use href="#p-mc"/></svg><span class="barc"><i></i></span></div>
+            <div class="lab-bot">Main Character</div>
+          </div>
+          <span class="pin"></span>
+        </div>
+        <div class="char-info">
+          <div class="ci-h"><h3>Main Character</h3><small>Hot pink</small></div>
+          <dl>
+            <div><dt>Mood</dt><dd>“I want to be seen.”</dd></div>
+            <div><dt>Special move</dt><dd><span class="combo">→ → ●</span> Spotlight: leads the team at the photo booth save.</dd></div>
+            <div><dt>In the team</dt><dd>Talks to shop owners and NPCs first.</dd></div>
+          </dl>
+        </div>
+        <button class="insert" type="button" data-pick="mc">Insert card</button>
+      </article>
+      <article class="char" data-char="pu" style="--c: var(--pu)" data-u="char-pu">
+        <div class="sd" data-noedit aria-hidden="true">
+          <span class="lock">Lock ▸</span>
+          <div class="lab">
+            <div class="lab-top">player</div>
+            <div class="face"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use href="#p-pu"/></svg><span class="barc"><i></i></span></div>
+            <div class="lab-bot">Party Up</div>
+          </div>
+          <span class="pin"></span>
+        </div>
+        <div class="char-info">
+          <div class="ci-h"><h3>Party Up</h3><small>Lime</small></div>
+          <dl>
+            <div><dt>Mood</dt><dd>“I want to find teammates.”</dd></div>
+            <div><dt>Special move</dt><dd><span class="combo">← → ●●</span> Squad Call: can merge two small groups into one team.</dd></div>
+            <div><dt>In the team</dt><dd>Brings strangers together.</dd></div>
+          </dl>
+        </div>
+        <button class="insert" type="button" data-pick="pu">Insert card</button>
+      </article>
+      <article class="char" data-char="gl" style="--c: var(--gl)" data-u="char-gl">
+        <div class="sd" data-noedit aria-hidden="true">
+          <span class="lock">Lock ▸</span>
+          <div class="lab">
+            <div class="lab-top">player</div>
+            <div class="face"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use href="#p-gl"/></svg><span class="barc"><i></i></span></div>
+            <div class="lab-bot">Glitch</div>
+          </div>
+          <span class="pin"></span>
+        </div>
+        <div class="char-info">
+          <div class="ci-h"><h3>Glitch</h3><small>Orange</small></div>
+          <dl>
+            <div><dt>Mood</dt><dd>“I want to be weird.”</dd></div>
+            <div><dt>Special move</dt><dd><span class="combo">↑ ↓ ↑ ●</span> Bug Report: can swap one clue per level.</dd></div>
+            <div><dt>In the team</dt><dd>Thinks sideways when a puzzle gets stuck.</dd></div>
+          </dl>
+        </div>
+        <button class="insert" type="button" data-pick="gl">Insert card</button>
+      </article>
+    </div>
+    <div class="namebox">
+      <label for="pname">Player name on your card</label>
+      <input id="pname" type="text" maxlength="14" placeholder="e.g. PETER" autocomplete="off">
+      <p>Each player scans their card at every level to collect that week’s game booklet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEVELS ============ -->
+<section class="band mustard" id="levels">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">04 · SELECT LEVEL</span>
+      <div class="bars"><h2 class="bar w">Paris is the map</h2></div>
+      <p>Each district is one level and opens on a Saturday. Clear a level to save the game. Three saves unlock the final stage.</p>
+    </div>
+    <div class="lv-grid">
+      <div class="map">
+        <svg viewBox="0 0 600 440" role="group" aria-label="Map of the four Paris districts">
+          <g stroke="#D3C7AF" stroke-width="3" fill="none">
+            <path d="M0 80 L600 60 M0 190 L600 170 M0 250 L600 240 M120 0 L150 440 M300 0 L290 440 M420 0 L440 440 M520 0 L560 440 M0 0 L600 420 M600 30 L60 440"/>
+          </g>
+          <path d="M-10 372 C90 340 170 352 250 330 C330 306 380 312 450 296 C520 280 560 290 620 310" fill="none" stroke="#9DB5C9" stroke-width="26"/>
+          <text x="470" y="330" font-family="'Space Mono', monospace" font-size="13" font-style="italic" fill="#4E6A80">La Seine</text>
+          <path d="M470 120 C380 88 300 100 210 132 C168 190 196 262 250 292 C282 272 304 244 330 216" fill="none" stroke="#141313" stroke-width="4" stroke-dasharray="10 8"/>
+          <g class="node" data-lv="1" tabindex="0" role="button" aria-label="Level 1, République">
+            <circle class="ring" cx="470" cy="120" r="26"/><text class="n" x="470" y="127" text-anchor="middle">1</text><text x="470" y="80" text-anchor="middle">RÉPUBLIQUE</text>
+          </g>
+          <g class="node" data-lv="2" tabindex="0" role="button" aria-label="Level 2, Opéra">
+            <circle class="ring" cx="210" cy="132" r="26"/><text class="n" x="210" y="139" text-anchor="middle">2</text><text x="210" y="92" text-anchor="middle">OPÉRA</text>
+          </g>
+          <g class="node" data-lv="3" tabindex="0" role="button" aria-label="Level 3, Louvre">
+            <circle class="ring" cx="250" cy="292" r="26"/><text class="n" x="250" y="299" text-anchor="middle">3</text><text x="168" y="342" text-anchor="middle">LOUVRE</text>
+          </g>
+          <g class="node locked" data-lv="4" tabindex="0" role="button" aria-label="Final stage, Les Halles">
+            <circle class="ring" cx="330" cy="216" r="30"/><text class="n" id="finalGlyph" x="330" y="223" text-anchor="middle">?</text><text x="404" y="210" text-anchor="start" id="finalLabel">FINAL ???</text>
+          </g>
+          <g id="token" transform="translate(470 120)" aria-hidden="true">
+            <path d="M-11 -62 h15 l7 7 v22 h-22 z" style="fill: var(--tc)" stroke="#141313" stroke-width="3"/>
+            <path d="M0 -33 v6" stroke="#141313" stroke-width="3"/>
+          </g>
+        </svg>
+        <div class="map-legend" data-noedit><span><i style="background:var(--paper)"></i>Open level</span><span><i style="background:var(--red)"></i>Selected</span><span><i style="background:var(--olive)"></i>Saved</span><span><i style="background:#BDB7AC"></i>Locked</span></div>
+      </div>
+
+      <div>
+        <article class="lvp" data-lvp="1" data-u="lv-1">
+          <div class="lvp-h"><span class="k">LEVEL 1 · WEEK 1</span><h3>République</h3><span class="dt">Saturday 8 July 2028 · opening day</span></div>
+          <div class="lvp-b">
+            <dl>
+              <div><dt>Theme</dt><dd>Street Signals. Clues hide in posters, stickers and murals around the square.</dd></div>
+              <div><dt>Where</dt><dd>Record shops, cafés and small bookstores nearby.</dd></div>
+              <div><dt>Puzzle idea</dt><dd>Decode messages that local artists made by hand.</dd></div>
+            </dl>
+            <div class="act" data-noedit><button class="gbtn" type="button" data-clear="1">Clear level &amp; save</button></div>
+          </div>
+        </article>
+        <article class="lvp" data-lvp="2" data-u="lv-2" hidden>
+          <div class="lvp-h"><span class="k">LEVEL 2 · WEEK 2</span><h3>Opéra</h3><span class="dt">Saturday 15 July 2028</span></div>
+          <div class="lvp-b">
+            <dl>
+              <div><dt>Theme</dt><dd>Backstage. The whole district is treated as a stage set.</dd></div>
+              <div><dt>Where</dt><dd>Bakeries, vintage stores and costume shops.</dd></div>
+              <div><dt>Puzzle idea</dt><dd>Find props in shop windows and rebuild a scene.</dd></div>
+            </dl>
+            <div class="act" data-noedit><button class="gbtn" type="button" data-clear="2">Clear level &amp; save</button></div>
+          </div>
+        </article>
+        <article class="lvp" data-lvp="3" data-u="lv-3" hidden>
+          <div class="lvp-h"><span class="k">LEVEL 3 · WEEK 3</span><h3>Louvre</h3><span class="dt">Saturday 22 July 2028</span></div>
+          <div class="lvp-b">
+            <dl>
+              <div><dt>Theme</dt><dd>Hidden Masterpiece. Art clues away from the museum’s main path.</dd></div>
+              <div><dt>Where</dt><dd>Small galleries, frame makers and print shops in the side streets.</dd></div>
+              <div><dt>Puzzle idea</dt><dd>Spot the handmade fake among real artworks.</dd></div>
+            </dl>
+            <div class="act" data-noedit><button class="gbtn" type="button" data-clear="3">Clear level &amp; save</button></div>
+          </div>
+        </article>
+        <article class="lvp" data-lvp="4" data-u="lv-4" hidden>
+          <div class="lvp-h"><span class="k">FINAL · WEEK 4–5</span><h3>Final stage</h3><span class="dt">Decode week 29 Jul – 4 Aug · Final Saturday 5 August 2028</span></div>
+          <div class="lvp-b">
+            <dl>
+              <div><dt>Decode week</dt><dd>Players with three saves receive clues during the week. They have to work out where the final stage will happen.</dd></div>
+              <div><dt>Location</dt><dd data-lock="locked">Locked. Collect three saves to reveal it.</dd><dd data-lock="open" hidden>Les Halles. The final stage starts on Saturday 5 August 2028.</dd></div>
+            </dl>
+            <p class="lock-note" id="lockNote" data-noedit>LOCKED · Clear République, Opéra and Louvre to unlock. <button type="button" class="restore" style="display:inline-block!important;background:var(--ink);color:var(--paper)" id="skipAhead">Skip ahead (demo)</button></p>
+            <div class="act" data-noedit><a class="gbtn" href="#final" id="goFinal" hidden style="display:inline-grid; place-items:center; text-decoration:none">Go to the final stage ▶</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <p class="heat">Levels open from 6 pm on Saturdays to avoid the July heat. Most clues are indoors, in local shops.</p>
+
+    <div class="booth-row" data-u="booth-explain">
+      <div class="booth-mini" aria-hidden="true" data-noedit>
+        <span class="sign">SAVE POINT</span>
+        <span class="slot"></span>
+        <span class="mini-strip"><i></i><i></i><i></i></span>
+      </div>
+      <div>
+        <h3 class="h3bar">The save point photo booth</h3>
+        <p>Every level ends at a photo booth. This is where players save their progress. The print uses Y2K meme frames made with local artists, and players can design their own frame. Each week has its own badge.</p>
+        <div class="act" style="margin-top:16px" data-noedit><button class="gbtn ghost" type="button" id="tryBooth">Try the photo booth</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<dialog class="booth" id="booth" aria-labelledby="boothTitle">
+  <div class="booth-in" data-noedit>
+    <div>
+      <h3 id="boothTitle"><span class="bsign">SAVE POINT</span></h3>
+      <p id="boothSub">Smile. Four photos, one save.</p>
+      <p class="save-msg" id="saveMsg"></p>
+      <div class="booth-ctl">
+        <button class="gbtn" type="button" id="boothShoot">Take photos</button>
+        <button class="gbtn ghost" type="button" id="boothClose">Close</button>
+      </div>
+    </div>
+    <div class="outlet">
+      <div class="strip-out" id="stripOut">
+        <div class="frame"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use class="pf" href="#p-afk"/></svg><span class="meme t">LVL CLEAR</span></div>
+        <div class="frame"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use class="pf" href="#p-afk"/></svg><span class="meme b">NO AI WAS HERE</span></div>
+        <div class="frame"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use class="pf" href="#p-afk"/></svg><span class="meme t">OUCH</span></div>
+        <div class="frame"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use class="pf" href="#p-afk"/></svg><span class="meme b">SAVED!</span></div>
+        <div class="badge-w" id="wkBadge">W1</div>
+        <div class="stamp" id="stripStamp">SAVE 01/03<br>RÉPUBLIQUE · 08.07.28</div>
+      </div>
+      <span class="flash" id="flash"></span>
+    </div>
+  </div>
+</dialog>
+
+<!-- ============ FINAL STAGE ============ -->
+<section class="band ink" id="final">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">05 · BOSS LEVEL</span>
+      <div class="bars"><h2 class="bar">Final stage</h2><p class="bar w" style="font-size:clamp(1.2rem,3vw,1.8rem)">Saturday 5 August 2028 · Les Halles</p></div>
+      <p>All four teams meet for one last level. Step through the day below.</p>
+    </div>
+
+    <div class="boss-bar" data-noedit aria-hidden="true"><span>RUNDOWN</span><span class="meter"><i id="bossMeter" style="width:14%"></i></span><span id="bossStep">1/7</span></div>
+    <ul class="rd-chips" role="tablist" aria-label="Final stage rundown" data-noedit>
+      <li><button class="rd-chip" role="tab" aria-selected="true" data-rd="0">1 · Set-up</button></li>
+      <li><button class="rd-chip" role="tab" aria-selected="false" data-rd="1">2 · Check-in</button></li>
+      <li><button class="rd-chip" role="tab" aria-selected="false" data-rd="2">3 · Free play</button></li>
+      <li><button class="rd-chip" role="tab" aria-selected="false" data-rd="3">4 · Kick-off</button></li>
+      <li><button class="rd-chip" role="tab" aria-selected="false" data-rd="4">5 · Last level</button></li>
+      <li><button class="rd-chip" role="tab" aria-selected="false" data-rd="5">6 · Photo &amp; game</button></li>
+      <li><button class="rd-chip" role="tab" aria-selected="false" data-rd="6">7 · Exit</button></li>
+    </ul>
+    <div class="rd-panel" data-rdp="0" data-u="rd-1"><h3>Set-up</h3><div><h4>Players</h4><p>Not yet on site.</p></div><div><h4>On site</h4><p>Team flags, photo booths, the vote wall and a DJ sound check.</p></div></div>
+    <div class="rd-panel" data-rdp="1" data-u="rd-2" hidden><h3>Check-in</h3><div><h4>Players</h4><p>Show their character card.</p></div><div><h4>On site</h4><p>Staff scan the card and hand out the day’s survival map.</p></div></div>
+    <div class="rd-panel" data-rdp="2" data-u="rd-3" hidden><h3>Free play</h3><div><h4>Players</h4><p>Take photos and browse the Player Hall wall.</p></div><div><h4>On site</h4><p>Photo booths open.</p></div></div>
+    <div class="rd-panel" data-rdp="3" data-u="rd-4" hidden><h3>Kick-off</h3><div><h4>Players</h4><p>Meet their team by mood.</p></div><div><h4>On site</h4><p>Teams head out to solve puzzles in local shops around Les Halles.</p></div></div>
+    <div class="rd-panel" data-rdp="4" data-u="rd-5" hidden><h3>Last level</h3><div><h4>Players</h4><p>All four teams work together on the final puzzle. Players vote on site for the rules of this level.</p></div><div><h4>On site</h4><p>The winning team gets access to buy the limited city board game on Salomon’s website.</p></div></div>
+    <div class="rd-panel" data-rdp="5" data-u="rd-6" hidden><h3>Group photo &amp; board game</h3><div><h4>Players</h4><p>All four teams take one photo together. Everyone can play-test the city board game.</p></div><div><h4>On site</h4><p>Photographer and board game stand.</p></div></div>
+    <div class="rd-panel" data-rdp="6" data-u="rd-7" hidden><h3>Exit</h3><div><h4>Players</h4><p>Every player gets a personal finish card before leaving, win or lose.</p></div><div><h4>On site</h4><p>Host closes the game.</p></div></div>
+
+    <div class="vote" data-u="vote">
+      <div>
+        <h3>Vote the last rule</h3>
+        <p>At the finale, players choose the rule of the last level. Try it here. This demo only counts your own vote.</p>
+      </div>
+      <ul class="vopts">
+        <li><button class="vopt" type="button" data-v="0" aria-pressed="false"><i class="fill"></i><span class="e">Swap one teammate with another team</span><b class="pct">0%</b></button></li>
+        <li><button class="vopt" type="button" data-v="1" aria-pressed="false"><i class="fill"></i><span class="e">One player per team must play silent</span><b class="pct">0%</b></button></li>
+        <li><button class="vopt" type="button" data-v="2" aria-pressed="false"><i class="fill"></i><span class="e">The timer halves after every clue</span><b class="pct">0%</b></button></li>
+      </ul>
+    </div>
+
+    <div class="rewards">
+      <article class="reward" data-u="reward-win">
+        <div class="boxart" aria-hidden="true" data-noedit><b>SAVE POINT<br>PARIS</b></div>
+        <div>
+          <span class="who">WINNING TEAM</span>
+          <h3>The city board game</h3>
+          <p>Only the winning team gets a code to buy the limited city board game on Salomon’s website. Every player can play-test it at the finale.</p>
+        </div>
+      </article>
+      <article class="reward" data-u="reward-all">
+        <div class="sd" aria-hidden="true" data-noedit>
+          <span class="lock">Lock ▸</span>
+          <div class="lab">
+            <div class="lab-top">finish card</div>
+            <div class="face"><svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid slice"><use id="finishFace" href="#p-afk"/></svg><span class="barc"><i></i></span></div>
+            <div class="lab-bot">Game Clear</div>
+          </div>
+          <span class="pin"></span>
+        </div>
+        <div>
+          <span class="who">EVERY PLAYER</span>
+          <h3>Personal finish card</h3>
+          <p>Win or lose, every player leaves with their own finish card. Its serial number unlocks Salomon’s new city-exclusive collection online, with early access to order.</p>
+          <span class="serial" data-noedit>SERIAL SP28-0805-<span id="serial">XXXX</span> (mock-up)</span>
+        </div>
+      </article>
+    </div>
+    <p class="live"><b>● LIVE</b> The finale is streamed on Salomon’s website and Instagram, so online players can follow along.</p>
+  </div>
+</section>
+
+<!-- ============ RESEARCH ============ -->
+<section class="band" id="research">
+  <span class="sticker hide-m" style="top:50px; right:5%; transform:rotate(30deg)"><i class="bandage pink"></i></span>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">06 · WHY 2028</span>
+      <div class="bars"><h2 class="bar">Know the world</h2><p class="bar w" style="font-size:clamp(1.2rem,3vw,1.8rem)">before you play it</p></div>
+      <p>The idea comes from WGSN trend forecasts for 2028. Below are the trends, the data and the player problems that shaped each game mechanic.</p>
+    </div>
+
+    <div class="context">
+      <p class="ransom"><span>Gen Z 2028:</span> <span>too much chaos,</span> <span>too many algorithms,</span> <span>not enough</span> <span>reasons</span> <span>to go out.</span></p>
+      <ul class="opps">
+        <li data-u="opp-1">Turning games into real places already works for nostalgia and sharing. A real city game goes further and builds real connection.</li>
+        <li data-u="opp-2">People go out more in summer. Salomon’s outdoor, technical shoes fit a game played on foot across the city.</li>
+        <li data-u="opp-3">Local shops and artists take part, which gives the game a human, handmade feel.</li>
+      </ul>
+    </div>
+
+    <h3 class="h3bar">Six trend stats</h3>
+    <div class="stats">
+      <div class="stat" data-u="tr-1"><div class="top"><h4>Connecting in Chaos</h4><span class="src">T1</span></div><span class="pips" aria-hidden="true" data-noedit><i></i><i></i><i></i><i></i><i></i></span><p>AI makes life faster and noisier. Brands that create short moments of calm will matter.</p></div>
+      <div class="stat" data-u="tr-2"><div class="top"><h4>Fragmented Identities</h4><span class="src">T1</span></div><span class="pips" aria-hidden="true" data-noedit><i></i><i></i><i></i><i></i><i class="o"></i></span><p>People connect through many small, specific groups instead of one big one.</p></div>
+      <div class="stat" data-u="tr-3"><div class="top"><h4>Joyful Audacity</h4><span class="src">T2</span></div><span class="pips" aria-hidden="true" data-noedit><i></i><i></i><i></i><i></i><i class="o"></i></span><p>Brands stop selling happiness. They let people take part and create.</p></div>
+      <div class="stat" data-u="tr-4"><div class="top"><h4>Snark</h4><span class="src">T2</span></div><span class="pips" aria-hidden="true" data-noedit><i></i><i></i><i></i><i class="o"></i><i class="o"></i></span><p>Absurd, anti-aesthetic humor pushes back against polished perfection.</p></div>
+      <div class="stat" data-u="tr-5"><div class="top"><h4>Selective Engagement</h4><span class="src">T2</span></div><span class="pips" aria-hidden="true" data-noedit><i></i><i></i><i></i><i></i><i class="o"></i></span><p>People only join what is fun and different. Play and experience come first.</p></div>
+      <div class="stat" data-u="tr-6"><div class="top"><h4>Human Premium</h4><span class="src">T3</span></div><span class="pips" aria-hidden="true" data-noedit><i></i><i></i><i></i><i></i><i></i></span><p>In the next stage of AI, content that people clearly made with care stands out to Gen Z.</p></div>
+    </div>
+
+    <h3 class="h3bar">Intel files: data → game rule</h3>
+    <div class="intel-wrap">
+      <table class="intel">
+        <thead><tr><th>Stat</th><th>What it says</th><th>Source</th><th>How Save Point uses it</th></tr></thead>
+        <tbody>
+          <tr><td class="n">78%</td><td>of consumers feel there are too many choices (Criteo)</td><td class="s">T1</td><td>Only one district opens each week</td></tr>
+          <tr><td class="n">66%</td><td>of Gen Z made new friends in sports groups; 58% of all people did (Strava)</td><td class="s">T1</td><td>Partner with Salomon, whose running community already exists</td></tr>
+          <tr><td class="n">60%</td><td>of APAC consumers prefer rewards they can share with friends and family (Collinson)</td><td class="s">T1</td><td>Rewards are photos and story, not personal coupons</td></tr>
+          <tr><td class="n">64%</td><td>of event hosts think people want more niche events; micro-event attendance grew 23% in 2024 (Eventbrite)</td><td class="s">T1</td><td>Small sessions at each level, with teams by mood</td></tr>
+          <tr><td class="n">63%</td><td>of UK adults value human-made work more</td><td class="s">T3</td><td>Local artists make the props; photo frames are imperfect on purpose</td></tr>
+          <tr><td class="n">96%</td><td>of US Gen Z girls feel able to create joyful moments</td><td class="s">T3</td><td>Players can design their own meme photo frame</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="h3bar">Five enemies</h3>
+    <p class="enemy-tip">These are the player problems the game has to beat. Click an enemy to see the counter-move.</p>
+    <div class="enemies">
+      <div class="enemy" data-u="en-1"><div class="enemy-in" tabindex="0" role="button" aria-pressed="false">
+        <div class="en-f"><span class="hpb"></span><span class="en-k">ENEMY 01</span><svg style="color:#FF7A00" aria-hidden="true"><use href="#en"/></svg><h4>Too Many Choices</h4><blockquote>“I never know what to do on weekends.”</blockquote><span class="en-hint" data-noedit>▶ Attack</span></div>
+        <div class="en-b"><span class="hpb"></span><span class="en-k">DEFEATED</span><h4>Counter-move</h4><p>One district opens each week, so there is always a plan for Saturday, for a whole month.</p></div>
+      </div></div>
+      <div class="enemy" data-u="en-2"><div class="enemy-in" tabindex="0" role="button" aria-pressed="false">
+        <div class="en-f"><span class="hpb"></span><span class="en-k">ENEMY 02</span><svg style="color:#FF2E93" aria-hidden="true"><use href="#en"/></svg><h4>Ad Radar</h4><blockquote>“Another marketing stunt?”</blockquote><span class="en-hint" data-noedit>▶ Attack</span></div>
+        <div class="en-b"><span class="hpb"></span><span class="en-k">DEFEATED</span><h4>Counter-move</h4><p>The brand stays in the background. The city is the star. The reward is the experience and a code for the limited city board game.</p></div>
+      </div></div>
+      <div class="enemy" data-u="en-3"><div class="enemy-in" tabindex="0" role="button" aria-pressed="false">
+        <div class="en-f"><span class="hpb"></span><span class="en-k">ENEMY 03</span><svg style="color:#00D3F0" aria-hidden="true"><use href="#en"/></svg><h4>Solo Awkward</h4><blockquote>“I have no one to go with.”</blockquote><span class="en-hint" data-noedit>▶ Attack</span></div>
+        <div class="en-b"><span class="hpb"></span><span class="en-k">DEFEATED</span><h4>Counter-move</h4><p>Teams are formed by the mood of the day. People who feel the same solve the puzzles together.</p></div>
+      </div></div>
+      <div class="enemy" data-u="en-4"><div class="enemy-in" tabindex="0" role="button" aria-pressed="false">
+        <div class="en-f"><span class="hpb"></span><span class="en-k">ENEMY 04</span><svg style="color:#A6EE00" aria-hidden="true"><use href="#en"/></svg><h4>Empty Wallet</h4><blockquote>“Will this cost a lot?”</blockquote><span class="en-hint" data-noedit>▶ Attack</span></div>
+        <div class="en-b"><span class="hpb"></span><span class="en-k">DEFEATED</span><h4>Counter-move</h4><p>Free to play. Just show up at the station.</p></div>
+      </div></div>
+      <div class="enemy" data-u="en-5"><div class="enemy-in" tabindex="0" role="button" aria-pressed="false">
+        <div class="en-f"><span class="hpb"></span><span class="en-k">ENEMY 05</span><svg style="color:#E5402F" aria-hidden="true"><use href="#en"/></svg><h4>July Heat</h4><blockquote>“Paris in July? I’ll melt.”</blockquote><span class="en-hint" data-noedit>▶ Attack</span></div>
+        <div class="en-b"><span class="hpb"></span><span class="en-k">DEFEATED</span><h4>Counter-move</h4><p>Most clues are inside local shops, with a few outdoor spots. Levels start after 6 pm.</p></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSPIRATION ARCHIVE ============ -->
+<section class="band table2" id="inspiration">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">07 · INSPIRATION ARCHIVE</span>
+      <div class="bars"><h2 class="bar">Where the ideas came from</h2></div>
+      <p>Every slide on this lightbox is a report, a brand case or a visual reference from my research. The code on each slide matches the source list at the bottom.</p>
+    </div>
+
+    <h3 class="h3bar">Trend reports</h3>
+    <div class="lightbox"><div class="slides" data-group="reports">
+      <figure class="slide" data-slot="t1" data-u="s-t1" style="margin:0"><div class="mtop"><span class="code">T1</span><span>WGSN</span></div><div class="win"></div><h4>BIG IDEAS 2028</h4><figcaption>Connecting in Chaos, Fragmented Identities</figcaption><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/article/68cc56b8d556203cc35a503e" target="_blank" rel="noopener noreferrer">View report on WGSN ↗</a></p></figure>
+      <figure class="slide" data-slot="t2" data-u="s-t2" style="margin:0"><div class="mtop"><span class="code">T2</span><span>WGSN</span></div><div class="win"></div><h4>Future Consumer 2028</h4><figcaption>Joyful Audacity, Snark, Selective Engagement</figcaption><p class="srcl"><a class="ulink" href="https://www.wgsn.com/fashion/article/68dfaa03ebdab7192d4932f2#page10" target="_blank" rel="noopener noreferrer">View report on WGSN ↗</a></p></figure>
+      <figure class="slide" data-slot="t3" data-u="s-t3" style="margin:0"><div class="mtop"><span class="code">T3</span><span>WGSN</span></div><div class="win"></div><h4>Youth Emerging Subcultures 2027</h4><figcaption>Maximalist It Girl, Human Premium</figcaption><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/article/69e1e42a5e30485c69a1c4a4" target="_blank" rel="noopener noreferrer">View report on WGSN ↗</a></p></figure>
+    </div></div>
+
+    <h3 class="h3bar">Case files: trend × brand × our move</h3>
+    <div class="lightbox"><div class="slides" data-group="cases">
+      <figure class="slide" data-slot="c1" data-u="s-c1" style="margin:0"><div class="mtop"><span class="code">C1</span><span>IRL GAMING</span></div><div class="win"></div><h4>PARAMOUNT “STREET FIGHTER” × LEO</h4><p>Rebuilt the game’s car-smashing bonus stage in São Paulo with old cars and pixel-art murals.</p><p class="ours"><b>OUR MOVE</b>Turn city districts into levels.</p><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Leo&amp;show=6ae4b3a39ece2f795c8e8f45" target="_blank" rel="noopener noreferrer">View source on WGSN ↗</a></p></figure>
+      <figure class="slide" data-slot="c2" data-u="s-c2" style="margin:0"><div class="mtop"><span class="code">C2</span><span>SHOPPABLE TOUCHPOINT</span></div><div class="win"></div><h4>Mercado Libre</h4><p>Turned a football pitch into a giant barcode. Fans scanned it to unlock app discounts.</p><p class="ours"><b>OUR MOVE</b>The metro billboard is the game’s entry point.</p><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Mercado+Libre&amp;show=6a3ebcc2da23fb01be34ff3c" target="_blank" rel="noopener noreferrer">View source on WGSN ↗</a></p></figure>
+      <figure class="slide" data-slot="c3" data-u="s-c3" style="margin:0"><div class="mtop"><span class="code">C3</span><span>CROSS-PLATFORM IP</span></div><div class="win"></div><h4>Netflix × Rockstar Games</h4><p>Premiered the “GTA VI” trailer as a streaming event and reached people outside gaming.</p><p class="ours"><b>OUR MOVE</b>The game, the board game and Salomon’s runners feed each other’s audiences.</p><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Rockstar+Games&amp;show=6a91821ce039f0da6f6c0e00" target="_blank" rel="noopener noreferrer">View source on WGSN ↗</a></p></figure>
+      <figure class="slide" data-slot="c4" data-u="s-c4" style="margin:0"><div class="mtop"><span class="code">C4</span><span>STORY EXTENSION</span></div><div class="win"></div><h4>Goliath Games “Fourth Wing”</h4><p>Extended a fantasy novel into a board game.</p><p class="ours"><b>OUR MOVE</b>A city board game after the event, sold only to players with a final stage code.</p><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Goliath+&amp;show=6a60fdec7f2ea01cf34b80f9" target="_blank" rel="noopener noreferrer">View source on WGSN ↗</a></p></figure>
+      <figure class="slide" data-slot="c8" data-u="s-c8" style="margin:0"><div class="mtop"><span class="code">C7</span><span>#BADTASTE</span></div><div class="win"></div><h4>Happy Champion</h4><p>Y2K meme frames in a Shanghai photo studio.</p><p class="ours"><b>OUR MOVE</b>A save point photo booth at the end of every level.</p></figure>
+      <figure class="slide" data-slot="c10" data-u="s-c10" style="margin:0"><div class="mtop"><span class="code">C8</span><span>HUMAN PREMIUM</span></div><div class="win"></div><h4>Gentle Monster × Maison Margiela</h4><p>Launched a new eyewear line in Seoul with a live dance performance.</p><p class="ours"><b>OUR MOVE</b>Clues are handmade by local artists.</p><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Gentle+Monster&amp;show=6aebadfbe222cf18d9114d52" target="_blank" rel="noopener noreferrer">View source on WGSN ↗</a></p></figure>
+      <figure class="slide" data-slot="c11" data-u="s-c11" style="margin:0"><div class="mtop"><span class="code">C9</span><span>MOOD-BASED</span></div><div class="win"></div><h4>Netflix AI Discover</h4><p>Recommends shows by mood.</p><p class="ours"><b>OUR MOVE</b>Players choose a character by “today’s mood”.</p><p class="srcl"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Family+Movie+Night&amp;show=6aecdd3ee222cf18d9115dc1" target="_blank" rel="noopener noreferrer">View source on WGSN ↗</a></p></figure>
+    </div></div>
+
+    <h3 class="h3bar">Mood board</h3>
+    <div class="lightbox"><div class="slides" data-group="mood">
+      <figure class="slide" data-slot="m-c1" data-u="s-m1" style="margin:0"><div class="mtop"><span class="code">C1</span><span>VISUAL</span></div><div class="win"></div><h4>Pixel art, street games</h4></figure>
+      <figure class="slide" data-slot="m-c8" data-u="s-m2" style="margin:0"><div class="mtop"><span class="code">C7</span><span>VISUAL</span></div><div class="win"></div><h4>Memes, bad taste, Y2K photo booth</h4></figure>
+      <figure class="slide" data-slot="m-c13" data-u="s-m3" style="margin:0"><div class="mtop"><span class="code">C10</span><span>VISUAL</span></div><div class="win"></div><h4>Meme graphic T-shirts</h4></figure>
+      <figure class="slide" data-slot="m-c14" data-u="s-m4" style="margin:0"><div class="mtop"><span class="code">C11</span><span>VISUAL</span></div><div class="win"></div><h4>Dopamine brights</h4></figure>
+      <figure class="slide" data-slot="m-c6" data-u="s-m5" style="margin:0"><div class="mtop"><span class="code">C6</span><span>VISUAL</span></div><div class="win"></div><h4>Nostalgic IP packaging</h4></figure>
+      <figure class="slide" data-slot="m-c2" data-u="s-m6" style="margin:0"><div class="mtop"><span class="code">C2</span><span>VISUAL</span></div><div class="win"></div><h4>Giant barcodes, large-scale play</h4></figure>
+      <figure class="slide" data-slot="m-c4" data-u="s-m7" style="margin:0"><div class="mtop"><span class="code">C4</span><span>VISUAL</span></div><div class="win"></div><h4>Board games</h4></figure>
+      <figure class="slide" data-slot="m-c15" data-u="s-m8" style="margin:0"><div class="mtop"><span class="code">C12</span><span>VISUAL</span></div><div class="win"></div><h4>Useless but fun design</h4></figure>
+    </div></div>
+
+    <div id="extraWrap">
+      <h3 class="h3bar">Extra finds</h3>
+      <div class="lightbox"><div class="slides" id="extraSlides"></div></div>
+    </div>
+
+    <h3 class="h3bar">Visual direction</h3>
+    <div class="dir">
+      <div data-u="dir-1"><h4>Color</h4><div class="sw" aria-hidden="true" data-noedit><i style="background:var(--afk)"></i><i style="background:var(--mc)"></i><i style="background:var(--pu)"></i><i style="background:var(--gl)"></i><i style="background:var(--ink)"></i><i style="background:var(--table)"></i></div><p>Bright dopamine colors for the four teams, set against pixel black and a grey collage table. (C11, T3 #GelatoPastels)</p></div>
+      <div data-u="dir-2"><h4>Texture</h4><p>Handmade, imperfect and sticker-like: torn paper, halftone, bandages, photo strips. (T3 #AntiPerfectionist)</p></div>
+      <div data-u="dir-3"><h4>Tone</h4><p>Snarky and absurd, but never forcing a joke. (T2 Snark)</p></div>
+    </div>
+
+    <h3 class="h3bar">Source list</h3>
+    <div class="sources">
+      <div>
+        <h4 class="mono small" style="margin-bottom:10px">TREND REPORTS</h4>
+        <ol>
+          <li><span class="c">T1</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/article/68cc56b8d556203cc35a503e" target="_blank" rel="noopener noreferrer">WGSN, Big Ideas 2028: Drivers &amp; Innovations</a></span></li>
+          <li><span class="c">T2</span><span class="e"><a class="ulink" href="https://www.wgsn.com/fashion/article/68dfaa03ebdab7192d4932f2#page10" target="_blank" rel="noopener noreferrer">WGSN, Future Consumer 2028: Emotions</a></span></li>
+          <li><span class="c">T3</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/article/69e1e42a5e30485c69a1c4a4" target="_blank" rel="noopener noreferrer">WGSN, Youth Emerging Subcultures 2027</a></span></li>
+        </ol>
+      </div>
+      <div>
+        <h4 class="mono small" style="margin-bottom:10px">CASES</h4>
+        <ol>
+          <li><span class="c">C1</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Leo&amp;show=6ae4b3a39ece2f795c8e8f45" target="_blank" rel="noopener noreferrer">Retro games move into the real world (WGSN)</a></span></li>
+          <li><span class="c">C2</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Mercado+Libre&amp;show=6a3ebcc2da23fb01be34ff3c" target="_blank" rel="noopener noreferrer">Giant barcode discount campaign (WGSN)</a></span></li>
+          <li><span class="c">C3</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Rockstar+Games&amp;show=6a91821ce039f0da6f6c0e00" target="_blank" rel="noopener noreferrer">Games partnering across platforms to reach new audiences (WGSN)</a></span></li>
+          <li><span class="c">C4</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Goliath+&amp;show=6a60fdec7f2ea01cf34b80f9" target="_blank" rel="noopener noreferrer">Stories extended into board games (WGSN)</a></span></li>
+          <li><span class="c">C5</span><span class="e">Dating apps partnering with large events (WGSN)</span></li>
+          <li><span class="c">C6</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=National+Lampoon%E2%80%99s&amp;show=6aec8017e222cf18d9115463" target="_blank" rel="noopener noreferrer">M&amp;M’s returns to past mascots and packaging (WGSN)</a></span></li>
+          <li><span class="c">C7</span><span class="e">Maximalist Y2K photo booths (personal research)</span></li>
+          <li><span class="c">C8</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Gentle+Monster&amp;show=6aebadfbe222cf18d9114d52" target="_blank" rel="noopener noreferrer">Gentle Monster × Maison Margiela immersive exhibition (WGSN)</a></span></li>
+          <li><span class="c">C9</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Family+Movie+Night&amp;show=6aecdd3ee222cf18d9115dc1" target="_blank" rel="noopener noreferrer">Netflix AI recommendation test in the US (WGSN)</a></span></li>
+          <li><span class="c">C10</span><span class="e">Meme marketing trend (personal research)</span></li>
+          <li><span class="c">C11</span><span class="e">Dopamine brights color trend (personal research)</span></li>
+          <li><span class="c">C12</span><span class="e"><a class="ulink" href="https://www.wgsn.com/insight/search?query=Useless+Design+&amp;show=6ae4b2b2e222cf18d9110e89" target="_blank" rel="noopener noreferrer">The fun of useless design (WGSN)</a></span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACHIEVEMENTS ============ -->
+<section class="band" id="kpi">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">08 · ACHIEVEMENTS</span>
+      <div class="bars"><h2 class="bar">How we keep score</h2></div>
+      <p>Four KPIs, written as achievements. Targets will be set with the partner brand based on its scale.</p>
+    </div>
+    <div class="ach">
+      <div data-u="kpi-1"><span class="trophy" style="background:var(--afk)" aria-hidden="true" data-noedit>01</span><h4>Joined</h4><ul><li>People who scanned the billboard</li><li>Character cards claimed</li></ul></div>
+      <div data-u="kpi-2"><span class="trophy" style="background:var(--pu)" aria-hidden="true" data-noedit>02</span><h4>Played</h4><ul><li>Players who cleared levels</li><li>Average saves per player</li></ul></div>
+      <div data-u="kpi-3"><span class="trophy" style="background:var(--mc)" aria-hidden="true" data-noedit>03</span><h4>Shared</h4><ul><li>Photo booth prints shared</li><li>Organic word of mouth</li></ul></div>
+      <div data-u="kpi-4"><span class="trophy" style="background:var(--gl)" aria-hidden="true" data-noedit>04</span><h4>Bought</h4><ul><li>City board game sales</li><li>Partner product sales</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="band table2" id="timeline">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">09 · TIMELINE</span>
+      <div class="bars"><h2 class="bar">Road to the final</h2></div>
+      <p>Four weeks of play in summer 2028, and what goes on social media each week.</p>
+    </div>
+    <div class="weeks">
+      <div class="wk" data-u="wk-1"><span class="d">8–14 JUL</span><h4>W1 · République</h4><p>Launch-day live coverage and team intros.</p></div>
+      <div class="wk" data-u="wk-2"><span class="d">15–21 JUL</span><h4>W2 · Opéra</h4><p>Open call for photo booth prints.</p></div>
+      <div class="wk" data-u="wk-3"><span class="d">22–28 JUL</span><h4>W3 · Louvre</h4><p>Mid-game recap: photo booth highlights and a first hint about decode week.</p></div>
+      <div class="wk dec" data-u="wk-4"><span class="d">29 JUL – 4 AUG</span><h4>W4 · Decode week</h4><p>Clue drops for players with three saves.</p></div>
+      <div class="wk fin" data-u="wk-5"><span class="d">SAT 5 AUG</span><h4>Final · Les Halles</h4><p>Livestream on Salomon’s website and Instagram.</p></div>
+    </div>
+    <h3 class="h3bar">Gantt chart · 1 April – 19 August 2028</h3>
+    <div class="gantt-wrap">
+      <table class="gantt">
+        <thead><tr><th>Task</th><th>Apr</th><th>May</th><th>3 Jun</th><th>10 Jun</th><th>17 Jun</th><th>24 Jun</th><th>1 Jul</th><th class="live-col">8 Jul</th><th class="live-col">15 Jul</th><th class="live-col">22 Jul</th><th class="live-col">29 Jul</th><th class="live-col">5 Aug</th><th>12 Aug</th><th>19 Aug</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="15">Plan</td></tr>
+          <tr><td>Finalise concept and confirm partner</td><td class="on" aria-label="active"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Meet district shops and artists</td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="grp"><td colspan="15">Make</td></tr>
+          <tr><td>Level design and handmade clues</td><td></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Key visual, billboards, photo frames</td><td></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Badges and character cards</td><td></td><td></td><td></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="grp"><td colspan="15">Warm-up and sign-up</td></tr>
+          <tr><td>Teaser posts on social media</td><td></td><td></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Billboards live, character card pre-booking</td><td></td><td></td><td></td><td></td><td></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="grp"><td colspan="15">Live game</td></tr>
+          <tr><td>Levels open: République, Opéra, Louvre</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="on lv" aria-label="active"></td><td class="on lv" aria-label="active"></td><td class="on lv" aria-label="active"></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Decode week: final location clues</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="on dec" aria-label="active"></td><td></td><td></td><td></td></tr>
+          <tr><td>FINAL STAGE at Les Halles</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="star" aria-label="Final stage"></td><td></td><td></td></tr>
+          <tr class="grp"><td colspan="15">After the game</td></tr>
+          <tr><td>Player Hall and player stories</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="on" aria-label="active"></td><td></td></tr>
+          <tr><td>Board game sales and recap Reels</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="on" aria-label="active"></td><td class="on" aria-label="active"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="g-key" data-noedit><span><i style="background:var(--red)"></i>In progress</span><span><i style="background:var(--olive)"></i>Level open</span><span><i style="background:var(--mustard)"></i>Decode week</span><span>★ Final stage</span></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <span class="logo">SAVE<i>·</i>POINT</span>
+    <p>A student concept for the GEM Luxury Fashion Design module, Futuretopia 2028. Salomon is used as a hypothetical partner. This is not an official Salomon campaign, and no codes or serial numbers on this page are real.</p>
+    <p class="mono small">Reference images in the Inspiration Archive (trend reports, brand cases and mood board) are used for academic, non-commercial purposes only. All rights belong to their respective owners. The metro photos are my own; the posters in them are mock-ups.</p>
+    <p class="mono small">Concept &amp; research: Tzu-Hsuan (Calsie) Liu · MSc Fashion, Design &amp; Luxury Management</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="etool" id="etool" hidden><button type="button" id="eLink">🔗 Link</button><button type="button" class="del" id="eDel">Delete text</button><button type="button" id="eDone">Done</button><div class="lrow" id="lrow" hidden><input type="url" id="lurl" placeholder="Paste a link, e.g. https://www.wgsn.com/…" aria-label="Link address"><button type="button" id="lok">Add</button><button type="button" id="lno">Cancel</button></div></div>
+<div class="dock" id="dock" hidden>
+  <div class="msg" id="dockMsg" aria-live="polite"></div>
+  <div class="hint" id="dockHint">Click any text to edit. Empty text counts as deleted. To add a link, select words and click <b>🔗 Link</b> (or type [text](https://…)). Hover a block for “Remove block”. Press <kbd>⌘</kbd>+<kbd>⇧</kbd> (Ctrl+Shift on Windows) to add a new text field after the text you last clicked.</div>
+  <div class="row"><button type="button" id="modeBtn" class="on">Editing: ON</button></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  /* Content saved by the owner, written into the page at each "final cut" so signed-out viewers see it too. */
+  var BAKED = {"edits": {"final-28": {"o": "The winning team gets access to buy the limited city board game on Salomon’s website.", "v": "The winning team gets access to buy the limited city board game on Salomon’s website. (get promo code)"}, "briefing-8": {"o": "Game starts Saturday 8 July 2028. A new district opens every Saturday. FINAL STAGE on Saturday 5 August.", "v": "Game starts Saturday 8 July 2028. A new district opens every Saturday. FINAL STAGE on 5 August."}, "research-58": {"o": "Counter-move", "v": "COUNTER-MOVE"}, "play-4": {"o": "Pick a mood", "v": "PICK A MOOD"}, "final-26": {"o": "All four teams work together on the final puzzle. Players vote on site for the rules of this level.", "v": "All four teams work together on the final puzzle."}, "research-57": {"o": "“I never know what to do on weekends.”", "v": "“I have no ideas weekends.”"}, "final-8": {"o": "Team flags, photo booths, the vote wall and a DJ sound check.", "v": "Team flags, photo booths, and a DJ sound check."}, "briefing-12": {"o": "Ages 18–28. Teams are formed by mood, not by age.", "v": "Ages 18–28. Teams are formed by mood(choose right after scanning the QRcode)"}, "briefing-18": {"o": "Winning team: access to buy the limited city board game. Every player: a personal finish card.", "v": "Winning team: access to buy the limited city board game. Every player: a personal finish card. (with numbers that you can access the new seasonal collections and could place and order before official released!)"}}, "hidden": {"vote": {"h": true}}, "added": {}, "gallery": {"m-c6": {"url": "img/m-c6.jpg"}, "c4": {"url": "img/c4.jpg"}, "c10": {"url": "img/c10.jpg"}, "m-c1": {"url": "img/m-c1.jpg"}, "m-c15": {"url": "img/m-c15.jpg"}, "c11": {"url": "img/c11.jpg"}, "c2": {"url": "img/c2.jpg"}, "c3": {"url": "img/c3.jpg"}, "c1": {"url": "img/c1.jpg"}, "t1": {"url": "img/t1.png"}, "m-c13": {"url": "img/m-c13.jpg"}, "t2": {"url": "img/t2.png"}, "m-c8": {"url": "img/m-c8.jpg"}, "m-c14": {"url": "img/m-c14.jpg"}, "m-c4": {"url": "img/m-c4.jpg"}, "m-c2": {"url": "img/m-c2.jpg"}, "c8": {"url": "img/c8.jpg"}, "t3": {"url": "img/t3.png"}}, "extra": {}};
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var ls = {
+    get: function (k) { try { return JSON.parse(localStorage.getItem("sp-" + k)); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem("sp-" + k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  /* ================= editable registry (built before any script changes the DOM) ================= */
+  var main = document.getElementById("main");
+  var SEL = "h1,h2,h3,h4,p,li,dt,dd,td,th,figcaption,blockquote,.e";
+  var cand = $$(SEL, main).filter(function (el) {
+    if (el.closest("[data-noedit]")) return false;
+    if (el.closest("button") && !el.classList.contains("e")) return false;
+    if (el.closest(".win")) return false;
+    if (!norm(el.textContent)) return false;
+    return true;
+  });
+  var editables = cand.filter(function (el) { return !cand.some(function (c) { return c !== el && el.contains(c); }); });
+  function htmlToRaw(el) {
+    var out = "";
+    el.childNodes.forEach(function (n) {
+      if (n.nodeType === 3) out += n.nodeValue;
+      else if (n.nodeType === 1 && n.classList.contains("restore")) return;
+      else if (n.nodeType === 1 && n.tagName === "A" && n.getAttribute("href")) out += "[" + n.textContent + "](" + n.getAttribute("href") + ")";
+      else if (n.nodeType === 1 && n.tagName === "BR") out += "\n";
+      else if (n.nodeType === 1) out += htmlToRaw(n);
+    });
+    return out;
+  }
+  var PH = {}, PT = {}, PR = {}, byKey = {}, counters = {};
+  editables.forEach(function (el) {
+    var sec = el.closest("section");
+    var sid = sec ? sec.id : "x";
+    counters[sid] = (counters[sid] || 0) + 1;
+    var k = sid + "-" + counters[sid];
+    el.dataset.k = k; PH[k] = el.innerHTML; PT[k] = norm(el.textContent); PR[k] = norm(htmlToRaw(el)); byKey[k] = el;
+  });
+
+  /* ================= state ================= */
+  var clone = function (o) { return JSON.parse(JSON.stringify(o || {})); };
+  var S = { edits: clone(BAKED.edits), hidden: clone(BAKED.hidden), added: clone(BAKED.added), gallery: clone(BAKED.gallery), extra: clone(BAKED.extra) };
+  var db = null, assets = null, canWrite = false, editMode = false;
+  var game = ls.get("game") || { char: null, name: "", saves: [] };
+  if (!Array.isArray(game.saves)) game.saves = [];
+
+  /* ================= toast ================= */
+  var toastEl = $("#toast"), toastT = 0;
+  function toast(msg) {
+    toastEl.textContent = msg; toastEl.classList.add("on");
+    clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove("on"); }, 2600);
+  }
+
+  /* ================= nav ================= */
+  var hud = $("#hud"), menuBtn = $("#menuBtn");
+  menuBtn.addEventListener("click", function () {
+    var open = hud.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", String(open));
+  });
+  $("#navList").addEventListener("click", function (e) { if (e.target.closest("a")) { hud.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); } });
+  document.addEventListener("click", function (e) { if (!e.target.closest("#hud")) { hud.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); } });
+
+  /* ================= hero ================= */
+  (function qr() {
+    var box = $("#qr"); if (!box) return;
+    var seed = 20280708;
+    var rnd = function () { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+    var finder = function (r, c) {
+      var inF = function (r0, c0) { return r >= r0 && r < r0 + 4 && c >= c0 && c < c0 + 4; };
+      if (inF(0, 0) || inF(0, 8) || inF(8, 0)) {
+        var rr = r % 8, cc = c % 8; if (r >= 8) rr = r - 8; if (c >= 8) cc = c - 8;
+        return (rr === 0 || rr === 3 || cc === 0 || cc === 3) ? 1 : (rr === 1 || rr === 2) && (cc === 1 || cc === 2) ? 0 : 1;
+      }
+      return -1;
+    };
+    var html = "";
+    for (var r = 0; r < 12; r++) for (var c = 0; c < 12; c++) {
+      var f = finder(r, c);
+      var on = f === -1 ? rnd() > 0.5 : f === 1;
+      html += on ? "<i></i>" : '<i class="o"></i>';
+    }
+    box.innerHTML = html;
+  })();
+  (function countdown() {
+    var d = Math.ceil((Date.UTC(2028, 6, 7, 22, 0, 0) - Date.now()) / 86400000);
+    $("#countDays").textContent = d > 0 ? d + " days" : "Now playing";
+  })();
+  $("#pressStart").addEventListener("click", function () {
+    var go = function () { var t = $("#briefing"); if (t) t.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); };
+    if (reduce) { toast("GAME LOADED"); go(); return; }
+    var ov = document.createElement("div");
+    ov.className = "boot"; ov.setAttribute("role", "status");
+    ov.innerHTML = '<div>LOADING SAVE POINT</div><div class="ld"><i></i></div><div style="font-size:.6rem">PARIS · SUMMER 2028</div>';
+    document.body.appendChild(ov);
+    setTimeout(function () { ov.remove(); go(); toast("PLAYER 1 READY"); }, 1300);
+  });
+
+  /* metro mock-up zoom */
+  (function () {
+    var dlg = $("#mockDlg"); if (!dlg) return;
+    var open = function () { if (dlg.showModal) { try { dlg.showModal(); return; } catch (e) {} } dlg.setAttribute("open", ""); };
+    var close = function () { if (dlg.close) dlg.close(); else dlg.removeAttribute("open"); };
+    $("#mockOpen").addEventListener("click", open);
+    $("#mockClose").addEventListener("click", close);
+    dlg.addEventListener("click", function (e) { if (e.target === dlg) close(); });
+  })();
+
+  /* ================= how to play ================= */
+  var stepBtns = $$(".step-btn"), panels = $$(".panel"), curStep = 0, playT = 0;
+  function showStep(i) {
+    curStep = (i + stepBtns.length) % stepBtns.length;
+    stepBtns.forEach(function (b, j) { b.setAttribute("aria-selected", String(j === curStep)); b.classList.toggle("done", j < curStep); });
+    panels.forEach(function (p, j) { p.hidden = j !== curStep; });
+  }
+  function stopPlay() { clearInterval(playT); playT = 0; $("#stepPlay").textContent = "▶ Play all"; }
+  stepBtns.forEach(function (b, j) { b.addEventListener("click", function () { stopPlay(); showStep(j); }); });
+  $("#stepPrev").addEventListener("click", function () { stopPlay(); showStep(curStep - 1); });
+  $("#stepNext").addEventListener("click", function () { stopPlay(); showStep(curStep + 1); });
+  $("#stepPlay").addEventListener("click", function () {
+    if (playT) { stopPlay(); return; }
+    showStep(0); this.textContent = "■ Stop";
+    playT = setInterval(function () { if (curStep >= stepBtns.length - 1) { stopPlay(); return; } showStep(curStep + 1); }, 2800);
+  });
+
+  /* ================= characters ================= */
+  var CHAR_COLOR = { afk: "var(--afk)", mc: "var(--mc)", pu: "var(--pu)", gl: "var(--gl)" };
+  function txt(el) { if (!el) return ""; var c = el.cloneNode(true); $$(".restore", c).forEach(function (b) { b.remove(); }); return norm(c.textContent); }
+  function charName(id) { return txt($('.char[data-char="' + id + '"] .ci-h h3')) || id.toUpperCase(); }
+  function renderChar() {
+    $$(".char").forEach(function (c) {
+      var id = c.dataset.char;
+      c.dataset.sel = String(game.char === id);
+      $(".lab-bot", c).textContent = charName(id);
+      $(".lab-top", c).textContent = (game.char === id && game.name) ? game.name : "player";
+      $(".insert", c).textContent = game.char === id ? "Card inserted ✓" : "Insert card";
+    });
+    document.documentElement.style.setProperty("--tc", game.char ? CHAR_COLOR[game.char] : "var(--red)");
+    $("#hudName").textContent = game.char ? ((game.name ? game.name + " · " : "") + charName(game.char)) : "No character yet";
+    var href = "#p-" + (game.char || "afk");
+    $$(".pf").forEach(function (u) { u.setAttribute("href", href); });
+    $("#finishFace").setAttribute("href", href);
+    $("#stripOut").style.setProperty("--c", game.char ? CHAR_COLOR[game.char] : "var(--red)");
+  }
+  $$(".insert").forEach(function (b) {
+    b.addEventListener("click", function () {
+      game.char = b.dataset.pick; ls.set("game", game); renderChar();
+      toast("CARD INSERTED: " + charName(game.char).toUpperCase());
+    });
+  });
+  var pname = $("#pname");
+  pname.value = game.name || "";
+  pname.addEventListener("input", function () { game.name = pname.value.toUpperCase().slice(0, 14); ls.set("game", game); renderChar(); });
+
+  /* ================= levels + photo booth ================= */
+  var POS = { 1: [470, 120], 2: [210, 132], 3: [250, 292], 4: [330, 216] };
+  var LV = { 1: { name: "RÉPUBLIQUE", date: "08.07.28" }, 2: { name: "OPÉRA", date: "15.07.28" }, 3: { name: "LOUVRE", date: "22.07.28" } };
+  var curLv = 1;
+  function unlocked() { return [1, 2, 3].every(function (n) { return game.saves.indexOf(n) > -1; }); }
+  function selectLevel(n) {
+    curLv = n;
+    $$(".map .node").forEach(function (g) { g.classList.toggle("sel", +g.dataset.lv === n); });
+    $$(".lvp").forEach(function (p) { p.hidden = +p.dataset.lvp !== n; });
+    var p = POS[n]; $("#token").setAttribute("transform", "translate(" + p[0] + " " + p[1] + ")");
+  }
+  function renderProgress() {
+    var u = unlocked();
+    $$(".hp .band-aid").forEach(function (b) {
+      var s = +b.dataset.s;
+      b.classList.toggle("on", s === 4 ? u : game.saves.length >= s);
+    });
+    $("#hpBar").setAttribute("aria-label", "Saves: " + Math.min(game.saves.length, 3) + " of 3" + (u ? ", final stage unlocked" : ""));
+    $$(".map .node").forEach(function (g) {
+      var n = +g.dataset.lv;
+      g.classList.toggle("cleared", n < 4 && game.saves.indexOf(n) > -1);
+      if (n === 4) g.classList.toggle("locked", !u);
+    });
+    $("#finalGlyph").textContent = u ? "★" : "?";
+    $("#finalLabel").textContent = u ? "LES HALLES" : "FINAL ???";
+    $$('[data-lock="locked"]').forEach(function (e) { e.hidden = u; });
+    $$('[data-lock="open"]').forEach(function (e) { e.hidden = !u; });
+    $("#lockNote").hidden = u;
+    $("#goFinal").hidden = !u;
+    $$("[data-clear]").forEach(function (b) {
+      var done = game.saves.indexOf(+b.dataset.clear) > -1;
+      b.textContent = done ? "Saved ✓ · play again" : "Clear level & save";
+    });
+  }
+  $$(".map .node").forEach(function (g) {
+    var go = function () { selectLevel(+g.dataset.lv); };
+    g.addEventListener("click", go);
+    g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+  });
+  $("#skipAhead").addEventListener("click", function () { game.saves = [1, 2, 3]; ls.set("game", game); renderProgress(); toast("FINAL STAGE UNLOCKED"); });
+
+  var booth = $("#booth"), boothLv = 0, shot = false;
+  function openBooth(n) {
+    boothLv = n; shot = false;
+    var strip = $("#stripOut");
+    strip.classList.remove("print"); void strip.offsetWidth;
+    if (reduce) strip.style.visibility = "hidden";
+    $("#saveMsg").textContent = "";
+    $("#boothShoot").disabled = false;
+    $("#boothSub").textContent = n ? "Level " + n + " · " + LV[n].name + ". Four photos, one save." : "Test shot. This one does not count as a save.";
+    $("#wkBadge").textContent = n ? "W" + n : "TEST";
+    var nm = game.name || "PLAYER 1";
+    $("#stripStamp").innerHTML = "";
+    $("#stripStamp").append(n ? "SAVE 0" + n + "/03" : "TEST SHOT", document.createElement("br"), (n ? LV[n].name + " · " + LV[n].date : "SAVE POINT 2028"), document.createElement("br"), nm);
+    if (booth.showModal) { try { booth.showModal(); } catch (e) { booth.setAttribute("open", ""); } } else booth.setAttribute("open", "");
+  }
+  function closeBooth() { if (booth.close) booth.close(); else booth.removeAttribute("open"); }
+  $$("[data-clear]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (!game.char) { toast("INSERT A CHARACTER CARD FIRST"); var t = $("#characters"); if (t) t.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); return; }
+      openBooth(+b.dataset.clear);
+    });
+  });
+  $("#tryBooth").addEventListener("click", function () { openBooth(0); });
+  $("#boothClose").addEventListener("click", closeBooth);
+  booth.addEventListener("close", function () {
+    if (shot && boothLv && boothLv < 3 && !unlocked()) selectLevel(boothLv + 1);
+    if (shot && unlocked() && boothLv) selectLevel(4);
+  });
+  $("#boothShoot").addEventListener("click", function () {
+    if (shot) return; shot = true; this.disabled = true;
+    var strip = $("#stripOut"), fl = $("#flash");
+    var finish = function () {
+      if (boothLv) {
+        if (game.saves.indexOf(boothLv) < 0) game.saves.push(boothLv);
+        ls.set("game", game); renderProgress();
+        var n = Math.min(game.saves.length, 3);
+        $("#saveMsg").textContent = unlocked() ? "GAME SAVED 3/3 · FINAL STAGE UNLOCKED" : "GAME SAVED " + n + "/3";
+        toast(unlocked() ? "FINAL STAGE UNLOCKED" : "SAVE " + n + "/3 COMPLETE");
+      } else { $("#saveMsg").textContent = "NICE SHOT · NOT SAVED"; }
+    };
+    if (reduce) { strip.style.visibility = "visible"; finish(); return; }
+    fl.classList.remove("go"); void fl.offsetWidth; fl.classList.add("go");
+    setTimeout(function () { strip.classList.add("print"); }, 900);
+    setTimeout(finish, 3300);
+  });
+
+  /* ================= final stage ================= */
+  var chips = $$(".rd-chip"), rdp = $$(".rd-panel");
+  function showRd(i) {
+    chips.forEach(function (c, j) { c.setAttribute("aria-selected", String(j === i)); c.classList.toggle("past", j < i); });
+    rdp.forEach(function (p, j) { p.hidden = j !== i; });
+    $("#bossMeter").style.width = Math.round((i + 1) / chips.length * 100) + "%";
+    $("#bossStep").textContent = (i + 1) + "/" + chips.length;
+  }
+  chips.forEach(function (c, j) { c.addEventListener("click", function () { showRd(j); }); });
+  var myVote = ls.get("vote");
+  function renderVote() {
+    $$(".vopt").forEach(function (b) {
+      var me = String(myVote) === b.dataset.v;
+      b.setAttribute("aria-pressed", String(me));
+      $(".fill", b).style.width = me ? "100%" : "0";
+      $(".pct", b).textContent = me ? "YOUR PICK" : "";
+    });
+  }
+  $$(".vopt").forEach(function (b) { b.addEventListener("click", function () { myVote = b.dataset.v; ls.set("vote", myVote); renderVote(); toast("VOTE CAST"); }); });
+  (function serial() { var s = ""; var ch = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; for (var i = 0; i < 4; i++) s += ch[Math.floor(Math.random() * ch.length)]; $("#serial").textContent = s; })();
+
+  /* ================= enemies ================= */
+  $$(".enemy-in").forEach(function (card) {
+    var flip = function () {
+      var f = card.parentNode.classList.toggle("flipped");
+      card.setAttribute("aria-pressed", String(f));
+      var n = $$(".enemy.flipped").length, tot = $$(".enemy").length;
+      if (f) toast(n === tot ? "ALL ENEMIES DEFEATED" : "ENEMY DEFEATED " + n + "/" + tot);
+    };
+    card.addEventListener("click", function (e) { if (e.target.closest(".ubtn")) return; flip(); });
+    card.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
+  });
+
+  /* ================= gallery slots ================= */
+  function shrink(file) {
+    return new Promise(function (res) {
+      if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size < 1200000) { res(file); return; }
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var max = 1800, w = img.naturalWidth, h = img.naturalHeight, sc = Math.min(1, max / Math.max(w, h));
+        var cv = document.createElement("canvas"); cv.width = Math.round(w * sc); cv.height = Math.round(h * sc);
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        cv.toBlob(function (b) { res(b || file); }, "image/jpeg", 0.86);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); res(file); };
+      img.src = url;
+    });
+  }
+  function upload(file) {
+    if (!assets) return Promise.reject({ message: "Uploads are not available in this view." });
+    return shrink(file).then(function (b) { return assets.upload(b); });
+  }
+  function renderSlots() {
+    $$(".slide[data-slot]").forEach(function (sl) {
+      var slot = sl.dataset.slot, g = S.gallery[slot], win = $(".win", sl), code = norm($(".code", sl).textContent);
+      win.innerHTML = "";
+      if (g && g.url) {
+        var img = document.createElement("img"); img.src = g.url; img.alt = txt($("h4", sl)); img.loading = "lazy"; win.appendChild(img);
+      } else {
+        var em = document.createElement("div"); em.className = "empty";
+        var b = document.createElement("b"); b.textContent = code; em.append(b, "Image coming soon"); win.appendChild(em);
+      }
+      var tools = $(".win-tools", sl);
+      if (!tools) { tools = document.createElement("div"); tools.className = "win-tools edit-only"; win.after(tools); }
+      tools.innerHTML = "";
+      if (canWrite && assets) {
+        var lab = document.createElement("label"); lab.textContent = g && g.url ? "Replace image" : "Upload image";
+        var inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.id = "up-" + slot; lab.appendChild(inp);
+        inp.addEventListener("change", function () {
+          var f = inp.files && inp.files[0]; if (!f) return;
+          sl.classList.add("loading"); dockMsg("Uploading…");
+          upload(f).then(function (r) {
+            var old = g && g.aid;
+            S.gallery[slot] = { url: r.url, aid: r.id }; renderSlots();
+            return dbSet("gallery", slot, { url: r.url, aid: r.id }).then(function () { if (old && old !== r.id) assets.delete(old).catch(function () {}); });
+          }).catch(function (e) { dockMsg("Upload failed: " + ((e && e.message) || "try a smaller image") ); })
+            .then(function () { sl.classList.remove("loading"); });
+        });
+        tools.appendChild(lab);
+        if (g && g.url) {
+          var rm = document.createElement("button"); rm.type = "button"; rm.className = "rm"; rm.textContent = "Remove";
+          rm.addEventListener("click", function () {
+            var aid = g.aid; delete S.gallery[slot]; renderSlots();
+            dbDel("gallery", slot).then(function () { if (aid) assets.delete(aid).catch(function () {}); });
+          });
+          tools.appendChild(rm);
+        }
+      }
+    });
+    renderExtra();
+  }
+  function renderExtra() {
+    var box = $("#extraSlides"), wrap = $("#extraWrap");
+    var items = Object.keys(S.extra).map(function (id) { return Object.assign({ id: id }, S.extra[id]); }).filter(function (x) { return x && x.url; }).sort(function (a, b) { return (a.t || 0) - (b.t || 0); });
+    box.innerHTML = "";
+    items.forEach(function (it, i) {
+      var f = document.createElement("figure"); f.className = "slide"; f.style.margin = "0";
+      var top = document.createElement("div"); top.className = "mtop";
+      var c = document.createElement("span"); c.className = "code"; c.textContent = "X" + (i + 1);
+      var s2 = document.createElement("span"); s2.textContent = "EXTRA"; top.append(c, s2);
+      var win = document.createElement("div"); win.className = "win";
+      var img = document.createElement("img"); img.src = it.url; img.alt = it.cap || "Extra reference"; img.loading = "lazy"; win.appendChild(img);
+      f.append(top, win);
+      if (editMode && canWrite) {
+        var inp = document.createElement("input"); inp.type = "text"; inp.id = "xcap-" + it.id; inp.value = it.cap || ""; inp.placeholder = "Caption (source, why it matters)";
+        inp.style.cssText = "font:inherit;font-size:.875rem;padding:6px 8px;border:2px solid var(--ink);width:100%";
+        inp.addEventListener("change", function () { S.extra[it.id].cap = inp.value; dbSet("extra", it.id, S.extra[it.id]); });
+        var tools = document.createElement("div"); tools.className = "win-tools";
+        var rm = document.createElement("button"); rm.type = "button"; rm.className = "rm"; rm.textContent = "Remove slide";
+        rm.addEventListener("click", function () { var aid = it.aid; delete S.extra[it.id]; renderExtra(); dbDel("extra", it.id).then(function () { if (aid && assets) assets.delete(aid).catch(function () {}); }); });
+        tools.appendChild(rm); f.append(inp, tools);
+      } else if (it.cap) {
+        var cap = document.createElement("p"); cap.textContent = it.cap; f.appendChild(cap);
+      }
+      box.appendChild(f);
+    });
+    if (editMode && canWrite && assets) {
+      var add = document.createElement("label"); add.className = "add-slide";
+      add.innerHTML = "<span><b>+</b>Add slides<br><small>Pick one or more images</small></span>";
+      var inp2 = document.createElement("input"); inp2.type = "file"; inp2.accept = "image/*"; inp2.multiple = true; inp2.id = "extraUp"; add.appendChild(inp2);
+      inp2.addEventListener("change", function () {
+        var files = Array.prototype.slice.call(inp2.files || []); if (!files.length) return;
+        dockMsg("Uploading " + files.length + "…");
+        var chain = Promise.resolve();
+        files.forEach(function (f) {
+          chain = chain.then(function () { return upload(f); }).then(function (r) {
+            var id = "x" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+            S.extra[id] = { url: r.url, aid: r.id, cap: "", t: Date.now() };
+            return dbSet("extra", id, S.extra[id]);
+          });
+        });
+        chain.then(function () { renderExtra(); dockMsg("Slides added"); }, function (e) { renderExtra(); dockMsg("Upload failed: " + ((e && e.message) || "try again")); });
+      });
+      box.appendChild(add);
+    }
+    wrap.hidden = !items.length && !(editMode && canWrite);
+  }
+
+  /* ================= text edits, hidden blocks, added fields ================= */
+  var editing = null, lastAnchor = null, pendingApply = false;
+  function resolveEl(k, o, used) {
+    var el = byKey[k];
+    if (el && (!o || PT[k] === o) && !(used && used.has(el))) return el;
+    if (!o) return null;
+    for (var i = 0; i < editables.length; i++) { var c = editables[i]; if (PT[c.dataset.k] === o && !(used && used.has(c))) return c; }
+    return null;
+  }
+  var LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"]+[^\s<>".,;:!?)\]])/g;
+  function setRich(el, v) {
+    el.textContent = "";
+    var last = 0, m; LINK_RE.lastIndex = 0;
+    while ((m = LINK_RE.exec(v))) {
+      if (m.index > last) el.appendChild(document.createTextNode(v.slice(last, m.index)));
+      var a = document.createElement("a"); a.className = "ulink"; a.href = m[2] || m[3]; a.target = "_blank"; a.rel = "noopener noreferrer";
+      a.textContent = m[1] || m[3]; el.appendChild(a);
+      last = m.index + m[0].length;
+    }
+    if (last < v.length) el.appendChild(document.createTextNode(v.slice(last)));
+  }
+  function rawOf(el) {
+    if (el.classList.contains("added")) { var a = S.added[el.dataset.aid]; return a ? a.v : ""; }
+    var ek = el.dataset.ek; return ek && S.edits[ek] ? S.edits[ek].v : null;
+  }
+  function restoreBtn(label, fn) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "restore"; b.contentEditable = "false"; b.textContent = label;
+    b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); fn(); });
+    return b;
+  }
+  function applyAll() {
+    if (editing) { pendingApply = true; return; }
+    editables.forEach(function (el) { el.innerHTML = PH[el.dataset.k]; el.classList.remove("edited", "cleared"); el.removeAttribute("data-ek"); });
+    var used = new Set();
+    Object.keys(S.edits).forEach(function (k) {
+      var d = S.edits[k]; if (!d || typeof d.v !== "string") return;
+      var el = resolveEl(k, d.o, used); if (!el) return; used.add(el);
+      el.dataset.ek = k;
+      if (d.v === "") { el.textContent = ""; el.classList.add("cleared"); el.appendChild(restoreBtn("Restore", function () { unsetEdit(k); })); }
+      else { setRich(el, d.v); el.classList.add("edited"); el.appendChild(restoreBtn("Undo edit", function () { unsetEdit(k); })); }
+    });
+    $$("[data-u]").forEach(function (u) {
+      var h = !!(S.hidden[u.dataset.u] && S.hidden[u.dataset.u].h);
+      u.classList.toggle("u-hidden", h);
+      var b = u.querySelector(":scope > .ubtn");
+      if (b) b.textContent = h ? "Restore block" : "✕ Remove block";
+    });
+    $$(".added").forEach(function (n) { n.remove(); });
+    var list = Object.keys(S.added).map(function (id) { return Object.assign({ id: id }, S.added[id]); }).filter(function (a) { return a && typeof a.v === "string" && a.v; }).sort(function (a, b) { return (a.t || 0) - (b.t || 0); });
+    var lastFor = {};
+    list.forEach(function (a) {
+      var anchor = resolveEl(a.after, a.o); if (!anchor) return;
+      var node = makeAdded(anchor, a.id);
+      setRich(node, a.v);
+      placeAdded(anchor, node, lastFor[a.after]);
+      lastFor[a.after] = node;
+    });
+    renderChar();
+  }
+  function makeAdded(anchor, id) {
+    var tag = anchor.tagName;
+    var t = tag === "LI" ? "li" : (tag === "DT" || tag === "DD") ? "dd" : (tag === "TD" || tag === "TH") ? "div" : "p";
+    var n = document.createElement(t); n.className = "added"; n.dataset.k = "add-" + id; n.dataset.aid = id;
+    return n;
+  }
+  function placeAdded(anchor, node, prev) {
+    if (prev && prev.isConnected) { prev.after(node); return; }
+    var tag = anchor.tagName;
+    if (tag === "TD" || tag === "TH") { anchor.appendChild(node); return; }
+    var ref = anchor.classList.contains("e") ? (anchor.closest("button") || anchor) : anchor;
+    ref.after(node);
+  }
+  function unsetEdit(k) { delete S.edits[k]; applyAll(); dbDel("edits", k); }
+
+  function startEdit(el) {
+    if (editing && editing !== el) commit(editing);
+    editing = el; lastAnchor = el;
+    el._before = el.innerHTML;
+    $$(".restore", el).forEach(function (b) { b.remove(); });
+    if (el.classList.contains("cleared")) el.textContent = "";
+    else { var raw0 = rawOf(el); if (raw0 !== null && raw0 !== undefined) el.textContent = raw0; else if (el.querySelector("a")) el.textContent = htmlToRaw(el); }
+    el.classList.add("editing");
+    try { el.contentEditable = "plaintext-only"; } catch (e) { el.contentEditable = "true"; }
+    if (el.contentEditable !== "plaintext-only") el.contentEditable = "true";
+    el.focus();
+    try { var r = document.createRange(); r.selectNodeContents(el); r.collapse(false); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {}
+    var tool = $("#etool"), rc = el.getBoundingClientRect();
+    tool.hidden = false;
+    var left = Math.max(8, Math.min(rc.left + window.scrollX, window.scrollX + document.documentElement.clientWidth - 220));
+    tool.style.left = left + "px"; tool.style.top = (rc.bottom + window.scrollY + 8) + "px";
+  }
+  function endEditUI(el) {
+    el.removeAttribute("contenteditable"); el.classList.remove("editing");
+    $("#etool").hidden = true; $("#lrow").hidden = true; savedRange = null;
+    editing = null;
+  }
+  function commit(el) {
+    if (!el || editing !== el) return;
+    var raw = (el.innerText || el.textContent || "").replace(/ /g, " ").replace(/\n{3,}/g, "\n\n").trim();
+    endEditUI(el);
+    if (el.classList.contains("added")) { commitAdded(el, raw); }
+    else {
+      var ek = el.dataset.ek || el.dataset.k, k = el.dataset.k, orig = PT[k];
+      if (norm(raw) === orig || norm(raw) === PR[k]) { if (S.edits[ek]) { delete S.edits[ek]; dbDel("edits", ek); } }
+      else { if (ek !== k) { delete S.edits[ek]; dbDel("edits", ek); } S.edits[k] = { v: raw, o: orig }; dbSet("edits", k, S.edits[k]); }
+    }
+    pendingApply = false; applyAll();
+  }
+  function cancel(el) {
+    if (!el || editing !== el) return;
+    endEditUI(el);
+    if (el.classList.contains("added") && !S.added[el.dataset.aid]) { el.remove(); }
+    pendingApply = false; applyAll();
+  }
+  function commitAdded(el, raw) {
+    var id = el.dataset.aid;
+    if (!raw) { if (S.added[id]) { delete S.added[id]; dbDel("added", id); } el.remove(); return; }
+    if (S.added[id]) { S.added[id].v = raw; }
+    else {
+      var a = el._anchor, ak = a.classList.contains("added") ? S.added[a.dataset.aid].after : a.dataset.k;
+      var ao = a.classList.contains("added") ? S.added[a.dataset.aid].o : PT[a.dataset.k];
+      S.added[id] = { after: ak, o: ao, v: raw, t: Date.now() };
+    }
+    dbSet("added", id, S.added[id]);
+  }
+  function addField() {
+    if (!editMode) return;
+    var anchor = editing || lastAnchor;
+    if (editing) commit(editing);
+    if (!anchor || !anchor.isConnected) {
+      var vh = window.innerHeight / 2, best = null, bd = Infinity;
+      editables.forEach(function (el) { var r = el.getBoundingClientRect(); if (!r.height || r.bottom < 0 || r.top > window.innerHeight) return; var d = Math.abs((r.top + r.bottom) / 2 - vh); if (d < bd) { bd = d; best = el; } });
+      anchor = best;
+    }
+    if (!anchor) { dockMsg("Click a text first, then press ⌘+⇧"); return; }
+    if (anchor.classList.contains("added") && !S.added[anchor.dataset.aid]) return;
+    var id = "a" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    var base = anchor.classList.contains("added") ? resolveEl(S.added[anchor.dataset.aid].after, S.added[anchor.dataset.aid].o) || anchor : anchor;
+    var node = makeAdded(base, id);
+    node._anchor = anchor;
+    if (anchor.classList.contains("added")) anchor.after(node); else placeAdded(anchor, node, null);
+    startEdit(node);
+    dockMsg("New text field. Type, then press Enter.");
+  }
+
+  /* edit-mode event wiring */
+  document.addEventListener("click", function (e) {
+    if (!editMode) return;
+    if (e.target.closest(".restore, .ubtn, .etool, .dock, .win-tools, .add-slide, #extraSlides input")) return;
+    var el = e.target.closest("[data-k]");
+    if (!el || !main.contains(el)) { if (editing && !e.target.closest("[data-k]")) commit(editing); return; }
+    e.preventDefault(); e.stopPropagation();
+    if (editing !== el) startEdit(el);
+  }, true);
+  document.addEventListener("focusout", function (e) {
+    if (!editing || e.target !== editing) return;
+    var to = e.relatedTarget;
+    if (to && to.closest && to.closest(".etool")) return;
+    var el = editing; setTimeout(function () { var ae = document.activeElement; if (editing === el && ae !== el && !(ae && ae.closest && ae.closest(".etool"))) commit(el); }, 0);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (!editing) return;
+    if (e.target && e.target.id === "lurl") {
+      if (e.key === "Enter") { e.preventDefault(); applyLink(); }
+      else if (e.key === "Escape") { e.preventDefault(); closeLink(); }
+      return;
+    }
+    if (e.key === "Escape") { e.preventDefault(); cancel(editing); }
+    else if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commit(editing); }
+  });
+  var etool = $("#etool");
+  etool.addEventListener("mousedown", function (e) { if (e.target.tagName !== "INPUT") e.preventDefault(); });
+  var savedRange = null;
+  function closeLink() { $("#lrow").hidden = true; if (editing) { editing.focus(); if (savedRange) { var s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); } } }
+  function applyLink() {
+    var el = editing; if (!el) return;
+    var url = norm($("#lurl").value); if (!url) { closeLink(); return; }
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+    url = url.replace(/[\s)]/g, encodeURIComponent);
+    var r = savedRange, label = r ? r.toString().trim() : "";
+    var ins = document.createTextNode("[" + (label || "link") + "](" + url + ")");
+    if (r && el.contains(r.commonAncestorContainer)) { r.deleteContents(); r.insertNode(ins); }
+    else el.appendChild(ins);
+    $("#lrow").hidden = true; savedRange = null;
+    el.focus();
+    try { var rr = document.createRange(); rr.setStartAfter(ins); rr.collapse(true); var s = window.getSelection(); s.removeAllRanges(); s.addRange(rr); } catch (e) {}
+    dockMsg("Link added. Press Enter to save.");
+  }
+  $("#eLink").addEventListener("click", function () {
+    if (!editing) return;
+    var s = window.getSelection();
+    savedRange = (s && s.rangeCount && editing.contains(s.getRangeAt(0).commonAncestorContainer)) ? s.getRangeAt(0).cloneRange() : null;
+    $("#lrow").hidden = false; var u = $("#lurl"); u.value = ""; u.focus();
+    if (!savedRange || savedRange.collapsed) dockMsg("Tip: select words first to turn them into the link.");
+  });
+  $("#lok").addEventListener("click", applyLink);
+  $("#lno").addEventListener("click", closeLink);
+  $("#lurl").addEventListener("blur", function (e) {
+    var to = e.relatedTarget;
+    if (to && (to === editing || (to.closest && to.closest(".etool")))) return;
+    var el = editing; setTimeout(function () { if (el && editing === el && document.activeElement !== el && !(document.activeElement && document.activeElement.closest && document.activeElement.closest(".etool"))) commit(el); }, 0);
+  });
+  $("#eDel").addEventListener("click", function () { if (!editing) return; editing.textContent = ""; commit(editing); dockMsg("Text deleted. Use Restore to bring it back."); });
+  $("#eDone").addEventListener("click", function () { if (editing) commit(editing); });
+  var armed = false;
+  document.addEventListener("keydown", function (e) {
+    if (!editMode) { armed = false; return; }
+    var mod = e.metaKey || e.ctrlKey;
+    if ((e.key === "Shift" && mod) || ((e.key === "Meta" || e.key === "Control") && e.shiftKey)) { armed = true; return; }
+    armed = false;
+  }, true);
+  document.addEventListener("keyup", function (e) {
+    if (!armed) return;
+    if (e.key === "Shift" || e.key === "Meta" || e.key === "Control") { armed = false; e.preventDefault(); addField(); }
+  }, true);
+  window.addEventListener("blur", function () { armed = false; });
+
+  /* block remove buttons */
+  $$("[data-u]").forEach(function (u) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "ubtn"; b.textContent = "✕ Remove block";
+    b.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var id = u.dataset.u;
+      if (S.hidden[id] && S.hidden[id].h) { delete S.hidden[id]; dbDel("hidden", id); dockMsg("Block restored"); }
+      else { S.hidden[id] = { h: true }; dbSet("hidden", id, S.hidden[id]); dockMsg("Block removed. Visitors won’t see it."); }
+      applyAll();
+    });
+    u.appendChild(b);
+  });
+
+  /* ================= db + dock ================= */
+  var dock = $("#dock"), msgT = 0;
+  function dockMsg(m) { var el = $("#dockMsg"); el.textContent = m; clearTimeout(msgT); msgT = setTimeout(function () { el.textContent = ""; }, 3500); }
+  function dbSet(col, id, data) {
+    if (!db) { dockMsg("Not saved: storage isn’t available in this view."); return Promise.resolve(); }
+    return db.collection(col).doc(id).set(data).then(function () { dockMsg("Saved"); }, function (e) { dockMsg("Not saved (" + ((e && e.code) || "error") + "). Try again."); });
+  }
+  function dbDel(col, id) {
+    if (!db) return Promise.resolve();
+    return db.collection(col).doc(id).delete().then(function () { dockMsg("Saved"); }, function (e) { dockMsg("Not saved (" + ((e && e.code) || "error") + "). Try again."); });
+  }
+  function setMode(on) {
+    editMode = !!on && canWrite;
+    if (!editMode && editing) commit(editing);
+    document.body.classList.toggle("is-edit", editMode);
+    var b = $("#modeBtn"); b.textContent = editMode ? "Editing: ON" : "Editing: OFF (visitor view)"; b.classList.toggle("on", editMode);
+    ls.set("mode", editMode ? "edit" : "view");
+    renderSlots();
+  }
+  $("#modeBtn").addEventListener("click", function () { setMode(!editMode); });
+
+  function subscribe(col, key) {
+    db.collection(col).onSnapshot(function (snap) {
+      var next = {};
+      snap.docs.forEach(function (d) { var x = d.data(); if (x && typeof x === "object") next[d.id] = x; });
+      S[key] = next;
+      if (key === "gallery" || key === "extra") renderSlots(); else applyAll();
+    }, function () {});
+  }
+
+  /* ================= boot ================= */
+  showStep(0); selectLevel(1); showRd(0); renderVote(); renderProgress(); applyAll(); renderSlots();
+
+  if (window.claude && window.claude.use) {
+    var userP = window.claude.use("user").then(function (u) {
+      if (!u) return false;
+      return Promise.all([u.isOwner().catch(function () { return false; }), u.canEdit().catch(function () { return false; })]).then(function (r) { return r[0] || r[1]; });
+    }, function () { return false; });
+    var dbP = window.claude.use("db").then(function (d) { return d; }, function () { return null; });
+    var asP = window.claude.use("assets").then(function (a) { return a; }, function () { return null; });
+    Promise.all([userP, dbP, asP]).then(function (r) {
+      db = r[1]; assets = r[2];
+      if (db) { subscribe("edits", "edits"); subscribe("hidden", "hidden"); subscribe("added", "added"); subscribe("gallery", "gallery"); subscribe("extra", "extra"); }
+      canWrite = !!r[0] && !!db;
+      if (r[0]) {
+        dock.hidden = false;
+        if (!db) { dockMsg("Editing is unavailable right now: storage didn’t load."); $("#modeBtn").disabled = true; return; }
+        setMode(ls.get("mode") !== "view");
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
